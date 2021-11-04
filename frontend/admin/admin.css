@@ -1,0 +1,251 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+*
+{
+    font-family: 'Open Sans', sans-serif;
+}
+
+body
+{
+    background: linear-gradient(-45deg, #5552ee, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 300% 300%;
+    animation: gradientbg 20s linear infinite;
+}
+
+/* ------------------------ PRE-GAME ------------------------ */ 
+
+@keyframes gradientbg
+{
+	0% {background-position: 0% 50%;}
+	50% {background-position: 100% 50%;}
+	100% {background-position: 0% 50%;}
+}
+
+
+.floatingformulas {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: -1;
+}
+
+.floatingformulas cite {
+    color: #fff;
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: .4;
+    cursor: pointer;
+}
+
+a.formula:link, a.formula:visited, a.formula:active
+{
+    text-decoration: none;
+    color: white;
+}
+
+#pregame
+{
+    text-align: center;
+    font-size: 2.5rem;
+}
+
+#title
+{
+    font-size: 8rem;
+}
+
+#credits
+{
+    margin-top: -10px;
+    margin-bottom: 50px;
+}
+
+#gameinfo
+{
+    padding: 30px;
+    margin: auto;
+    margin-top: 15px;
+    width: max-content;
+    border: 5px solid black;
+    border-radius: 10px;
+}
+
+#pregame h1,h2,h3,h4,h5,h6
+{
+    padding: 0;
+    margin: 0;
+}
+
+#gamedescription
+{
+    margin: auto;
+    width: 80%;
+    margin-top: 30px;
+    border: 5px solid black;
+    font-size: 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    padding: 15px;
+    background: #00000030;
+}
+
+.link
+{
+    background: #00000030;
+    padding: 5px;
+    border-radius: 10px;
+    color: #ff007c;
+}
+
+#rules
+{
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.descriptiontable
+{
+    text-align: center;
+    margin: auto;
+    border: 2px solid black;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+td
+{
+    border: 1px solid black;
+    border-right: none;
+    border-left: none;
+    border-bottom: none;
+}
+
+th
+{
+    padding: 10px;
+}
+
+.player
+{
+    width: max-content;
+    background: #00000050;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 20px;
+    color: white;
+    animation: join .5s;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.player:hover
+{
+    transform: scale(1.1);
+    transition: .25s;
+    background: #ff0063;
+    text-decoration: line-through;
+}
+
+@keyframes join
+{
+    from {transform: scale(0) rotate(45deg);}
+    to {transform: scale(1) rotate(0deg);}
+}
+
+@keyframes leave
+{
+    to {transform: scale(0) rotate(180deg);}
+}
+
+#playerscontainer
+{
+    margin: auto;
+    margin-top: 20px;
+    width: 90%;
+}
+
+#startgame
+{
+    width: 350px;
+    height: 90px;
+    border-radius: 30px;
+    border: 5px solid #000;
+    font-weight: bold;
+    font-size: 3rem;
+    background: linear-gradient(45deg, #b700ff, #7f00ff);
+    margin: 50px auto 50px auto;
+    transition: .25s;
+}
+
+#startgame:hover
+{
+    transform: scale(1.2);
+    transition: .5s;
+}
+
+#startgame:active
+{
+    transform: scale(0.9);
+}
+
+@keyframes dragabove
+{
+    to {transform: translateY(-1000px); opacity: 0;}
+}
+
+
+/* ------------------------ GAME ------------------------ */ 
+
+#game
+{
+    display: none;
+}
+
+.gamepanel
+{
+    display: block;
+    width: 20%;
+    border: 5px solid #000;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+}
+
+#infotable, #infotable th, #infotable tr, #infotable td
+{
+    border: 0;
+    margin: auto;
+}
+
+.gamepanel h1
+{
+    font-size: 2.5rem;
+    padding: 0;
+    margin: 0;
+    background: #00000090;
+}
+
+#leaderboard
+{
+    position: absolute;
+    left: 40px;
+}
+
+#screen
+{
+    width: 50%;
+    height: 90vh;
+    margin: auto;
+    margin-top: 2.5vh;
+}
+
+#info
+{
+    position: absolute;
+    right: 40px;
+    top: 25px;
+}

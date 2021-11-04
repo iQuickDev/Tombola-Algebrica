@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="admin.css">
+    <title>Tombola Algebrica - ADMIN</title>
+</head>
+
+<body>
+    <div class="floatingformulas">
+        <cite id="formula1"><a class="formula" target="_blank" href="https://en.wikipedia.org/wiki/Quadratic_formula">x
+                = (-b ± √b²-4ac) / 2a</a></cite>
+        <cite id="formula2"><a class="formula" target="_blank"
+                href="https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line">d = √(x₁ – x₂)² + (y₁ –
+                y₂)²</a></cite>
+        <cite id="formula3"><a class="formula" target="_blank"
+                href="https://en.wikipedia.org/wiki/Pythagorean_theorem">a²+b²=c²</a></cite>
+        <cite id="formula4"><a class="formula" target="_blank" href="https://en.wikipedia.org/wiki/Area_of_a_circle">π *
+                r²</a></cite>
+        <cite id="formula5"><a class="formula" target="_blank"
+                href="https://www.google.com/search?q=%28a%2Bb%29%5E2">(a+b)² = a² + 2ab + b²</a></cite>
+        <cite id="formula6"><a class="formula" target="_blank"
+                href="https://en.wikipedia.org/wiki/List_of_trigonometric_identities">sin²θ + cos²θ = 1</a></cite>
+        <cite id="formula7"><a class="formula" target="_blank"
+                href="https://en.wikipedia.org/wiki/Quadratic_equation#Discriminant">Δ = b² - 4ac</a></cite>
+        <cite id="formula8"><a class="formula" target="_blank"
+                href="https://en.wikipedia.org/wiki/Law_of_sines">a/sin(A) = b/sin(B) = c/sin(C)</a></cite>
+
+        <section id="content">
+            <div id="pregame">
+                <h1 id="title">Tombola Algebrica</h1>
+                <h4 id="credits">(creata da Lotti & Di Carlo)</h4>
+                <h3>Utilizza questo codice per entrare nel gioco</h3>
+                <div id="gameinfo">
+                    <h2 id="localip">[LOCAL IP]</h2>
+                </div>
+                <div id="gamedescription">
+                    <h2 id="rules">Regolamento & Istruzioni</h2>
+                    <p>
+                        Connettiti a <span class="link"><span id="gamelocalip">[LOCAL IP]</span>:<span
+                                id="gamelocalport">[PORT]</span>/play</span> ed inserisci il codice di accesso che vedi
+                        sopra,
+                        inserisci il tuo nome e premi su "Entra".
+                        <br>
+                        Quando il gioco inizierà riceverai una scheda con 15 numeri casuali, si applicano le regole
+                        classiche della tombola
+                        ovvero:
+                    <table class="descriptiontable">
+                        <thead>
+                            <th>Punti (sulla stessa riga)</th>
+                            <th>Premio</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2</td>
+                                <td>Ambo</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Terna</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Quaterna</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Cinquina</td>
+                            </tr>
+                            <tr>
+                                <td>Tutto</td>
+                                <td>Tombola</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    Ogni estrazione avrà un quesito matematico che dovrà essere risolto entro il tempo limite
+                    visualizzabile in basso a destra,
+                    <br>
+                    per trovare i risultati sarà necessario risolvere i quesiti su un foglio di carta prima che il tempo
+                    scada,
+                    <br>
+                    una volta trovato il risultato bisognerà controllare la propria scheda e vedere se il numero
+                    calcolato è presente o meno,
+                    <br>
+                    in caso lo sia si dovrà premere sul numero stesso per segnarlo come "estratto", altrimenti basterà
+                    continuare a giocare.
+                    <br style="margin-bottom: 20px">
+                    <h2>AMBO, TERNA, QUATERNA, CINQUINA E TOMBOLA</h2>
+                    <br>
+                    Nel caso un giocatore faccia ambo, terna, quaterna, cinquina o addirittura tombola il sistema lo
+                    segnalerà.
+                    <br>
+                    In caso di tombola il sistema controllerà gli errori di ogni giocatore (si considera errore la
+                    mancata
+                    <br>
+                    segnalazione di un numero estratto) oppure la segnalazione di un numero <strong>non</strong>
+                    estratto.
+                    <br>
+                    Ogni errore detrarrà <strong>1</strong> punto dal giocatore, quindi se ad esempio un giocatore ha 15
+                    punti (tombola)
+                    <br>
+                    con 3 errori ed un altro giocatore ha 14 punti con 0 errori, il giocatore con 15 punti e 3 errori
+                    arriverà secondo.
+                    <br style="margin-bottom: 20px">
+                    <table class="descriptiontable">
+                        <thead>
+                            <th>Posizione</th>
+                            <th>Punti</th>
+                            <th>Errori</th>
+                            <th>Punti (effettivi)</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1°</td>
+                                <td>12</td>
+                                <td>0</td>
+                                <td>12</td>
+                            </tr>
+                            <tr>
+                                <td>2°</td>
+                                <td>13</td>
+                                <td>2</td>
+                                <td>11</td>
+                            </tr>
+                            <tr>
+                                <td>3°</td>
+                                <td>15</td>
+                                <td>5</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>4°</td>
+                                <td>10</td>
+                                <td>1</td>
+                                <td>9</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    </p>
+                </div>
+                <br>
+                <div id="joinedplayers">
+                    <h2>Partecipanti (<span id="participantscount">[NUM]</span>)</h2>
+                    <div id="playerscontainer">
+                    </div>
+                </div>
+                <br>
+                <button id="startgame">Inizia</button>
+            </div>
+
+            <div id="game">
+                <div class="gamepanel" id="leaderboard">
+                    <h1>Classifica</h1>
+                </div>
+                <div class="gamepanel" id="screen">
+                    
+                </div>
+                <div class="gamepanel" id="info">
+                    <h1>Info</h1>
+                    <table id="infotable">
+                        <thead>
+                            <th>Estratti</th>
+                            <th>Tempo</th>
+                            <th>Giocatori</th>
+                            <th>Da estrarre</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>[EXTR]</td>
+                                <td>[T]</td>
+                                <td>[PNUM]</td>
+                                <td>[TOEXTR]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js></script>
+    <script src="admin.js"></script>
+</body>
+
+</html>
