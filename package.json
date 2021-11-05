@@ -1,11 +1,13 @@
 {
-  "name": "tombolaalgebrica",
-  "version": "1.0.0",
-  "description": "",
-  "main": "backend/server.js",
   "scripts": {
-    "test": "sudo node backend/server.js"
+    "run": "node ."
   },
-  "author": "",
-  "license": "MIT"
+  "name": "tombola-algebrica",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./backend",
+  "license": "MIT",
+  "dependencies": {
+    "ip": "^1.1.5"
+  }
 }
