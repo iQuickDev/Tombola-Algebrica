@@ -53,9 +53,27 @@ async function SimulatePlayerJoin(amount)
 
 async function StartGame()
 {
-    SimulatePlayerJoin(10)
-    /*document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
-    await new Promise(r => setTimeout(r, 1000));
-    document.querySelector("#pregame").style.display = "none"*/
+  document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
+  await new Promise(r => setTimeout(r, 1000));
+  document.querySelector("#pregame").style.display = "none"
+}
 
+async function ShuffleLeaderboard(firstElementIndex, secondElementIndex)
+{
+    let list = document.querySelector("#leaderboardplayers")
+    let nodes = list.children
+    let iterations = secondElementIndex - firstElementIndex
+    let temp
+
+    nodes[firstElementIndex].style.transform = "translateY(" + 41 * iterations + "px)"
+    nodes[secondElementIndex].style.transform = "translateY(-" + 41 * iterations + "px)"
+
+    temp = nodes[firstElementIndex].innerHTML
+    nodes[firstElementIndex].innerHTML = nodes[secondElementIndex].innerHTML
+    nodes[secondElementIndex].innerHTML = temp
+
+    await new Promise(r => setTimeout(r, 250))
+
+    nodes[firstElementIndex].style.transform = "translateY(0)"
+    nodes[secondElementIndex].style.transform = "translateY(0)"
 }
