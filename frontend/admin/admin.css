@@ -49,6 +49,7 @@ a.formula:link, a.formula:visited, a.formula:active
 {
     text-align: center;
     font-size: 2.5rem;
+    display: none;
 }
 
 #title
@@ -202,7 +203,7 @@ th
 
 #game
 {
-    display: none;
+
 }
 
 .gamepanel
@@ -219,6 +220,7 @@ th
 {
     border: 0;
     margin: auto;
+    color: #000;
 }
 
 .gamepanel h1
@@ -233,6 +235,124 @@ th
 {
     position: absolute;
     left: 40px;
+    background: #ffffff80;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboardheaders h2
+{
+    text-align: left;
+    display: inline;
+    color: black;
+    font-size: 1.5rem;
+}
+
+.leaderboardheaders h2:first-child
+{
+    position: absolute;
+    left: 5px;
+}
+
+.leaderboardheaders h2:last-child
+{
+    position: absolute;
+    right: 5px;
+}
+
+#positions
+{
+    width: 33%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    text-align: left;
+    color: #000;
+    border-top: 0;
+}
+
+#positions li
+{
+    text-align: center;
+    width: 50px;
+    height: 30px;
+    font-size: 1.5rem;
+    background: gray;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: 1px solid black;
+    border-top: none;
+}
+
+#first
+{
+    background: gold !important;
+    border-top: 1px solid #000 !important;
+}
+
+#second
+{
+    background: silver !important;
+}
+
+#third
+{
+    background:  #b95b46 !important;
+}
+
+
+.leaderboardpanel
+{
+    display: inline-block;
+}
+
+.leaderboardpanel ul
+{
+    text-align: left;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#players
+{
+    width: 70%;
+}
+
+#leaderboardplayers
+{
+    color: #000;
+    text-align: left;
+    list-style-type: none;
+    font-size: 1.5rem;
+    padding: 0;
+    border-top: 1px solid #000;
+}
+
+#leaderboardplayers li
+{
+    position: relative;
+    width: fit-content;
+    height: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: 1px solid black;
+    border-top: none;
+    border-right: none;
+    padding-left: 10px;
+    transition: transform .5s;
+}
+
+.score
+{
+    text-align: center;
+    position: absolute;
+    top: -1px;
+    right: -60px;
+    width: 58px;
+    height: 40px;
+    border: 1px solid #000;
+    padding: 0;
 }
 
 #screen
@@ -248,4 +368,5 @@ th
     position: absolute;
     right: 40px;
     top: 25px;
+    background: #ffffff80;
 }
