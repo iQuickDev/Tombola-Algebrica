@@ -29,6 +29,7 @@
         <cite id="formula8"><a class="formula" target="_blank"
                 href="https://en.wikipedia.org/wiki/Law_of_sines">a/sin(A) = b/sin(B) = c/sin(C)</a></cite>
 
+
         <section id="content">
             <div id="pregame">
                 <h1 id="title">Tombola Algebrica</h1>
@@ -40,7 +41,8 @@
                 <div id="gamedescription">
                     <h2 id="rules">Regolamento & Istruzioni</h2>
                     <p>
-                        Connettiti a <span class="link"><span id="gamelocalip">[LOCAL IP]</span>:<span id="gamelocalport">[PORT]</span></span>, inserisci il tuo nome
+                        Connettiti a <span class="link"><span id="gamelocalip">[LOCAL IP]</span>:<span
+                                id="gamelocalport">[PORT]</span></span>, inserisci il tuo nome
                         inserisci il tuo nome e premi su "Entra".
                         <br>
                         Quando il gioco inizierà riceverai una scheda con 15 numeri casuali, si applicano le regole
@@ -150,7 +152,6 @@
                 <br>
                 <button id="startgame">Inizia</button>
             </div>
-
             <div id="game">
                 <div class="gamepanel" id="leaderboard">
                     <h1>Classifica</h1>
@@ -159,57 +160,79 @@
                         <h2>Giocatori</h2>
                         <h2>Punti</h2>
                     </div>
-                    <div class="leaderboardpanel" id="positions">
-                        <ul>
-                        <li class="leaderboardposition" id="first">1°</li>
-                        <li class="leaderboardposition" id="second">2°</li>
-                        <li class="leaderboardposition" id="third">3°</li>
-                        <li class="leaderboardposition">4°</li>
-                        <li class="leaderboardposition">5°</li>
-                        <li class="leaderboardposition">6°</li>
-                        <li class="leaderboardposition">7°</li>
-                        <li class="leaderboardposition">8°</li>
-                        <li class="leaderboardposition">9°</li>
-                        <li class="leaderboardposition">10°</li>
-                        <li class="leaderboardposition">11°</li>
-                        <li class="leaderboardposition">12°</li>
-                        <li class="leaderboardposition">13°</li>
-                        <li class="leaderboardposition">14°</li>
-                    </ul>
+                    <div id="positionscontainer">
+                        <div class="leaderboardpanel" id="positions">
+                            <ul>
+                                <li class="leaderboardposition" id="first">1°</li>
+                                <li class="leaderboardposition" id="second">2°</li>
+                                <li class="leaderboardposition" id="third">3°</li>
+                                <li class="leaderboardposition">4°</li>
+                                <li class="leaderboardposition">5°</li>
+                                <li class="leaderboardposition">6°</li>
+                                <li class="leaderboardposition">7°</li>
+                                <li class="leaderboardposition">8°</li>
+                                <li class="leaderboardposition">9°</li>
+                                <li class="leaderboardposition">10°</li>
+                                <li class="leaderboardposition">11°</li>
+                                <li class="leaderboardposition">12°</li>
+                                <li class="leaderboardposition">13°</li>
+                                <li class="leaderboardposition">14°</li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="leaderboardpanel" id="players">
                         <ul id="leaderboardplayers">
-                            <li>testUser1 <span class="score">3</span></li>
-                            <li>testUser2 <span class="score">73</span></li>
-                            <li>testUser3 <span class="score">72</span></li>
-                            <li>testUser4 <span class="score">18</span></li>
-                            <li>testUser5 <span class="score">53</span></li>
-                            <li>testUser6 <span class="score">59</span></li>
-                            <li>testUser7 <span class="score">2</span></li>
-                            <li>testUser1 <span class="score">3</span></li>
-                            <li>testUser2 <span class="score">73</span></li>
-                            <li>testUser3 <span class="score">72</span></li>
-                            <li>testUser4 <span class="score">18</span></li>
-                            <li>testUser5 <span class="score">53</span></li>
-                            <li>testUser6 <span class="score">59</span></li>
-                            <li>testUser7 <span class="score">2</span></li>
+                            <li><span class="username">testUser1</span> <span class="score">43</span></li>
+                            <li><span class="username">t es tUser2</span> <span class="score">27</span></li>
+                            <li><span class="username">testUser3</span> <span class="score">91</span></li>
+                            <li><span class="username">testU ser4</span> <span class="score">12</span></li>
+                            <li><span class="username">tes tU ser5</span> <span class="score">39</span></li>
+                            <li><span class="username">testUser6</span> <span class="score">12</span></li>
+                            <li><span class="username">testUser7</span> <span class="score">34</span></li>
+                            <li><span class="username">testUs er8</span> <span class="score">87</span></li>
+                            <li><span class="username">tes tU ser9</span> <span class="score">1</span></li>
+                            <li><span class="username">testUser10</span> <span class="score">88</span></li>
+                            <li><span class="username">test User11</span> <span class="score">21</span></li>
+                            <li><span class="username">testU er12</span> <span class="score">32</span></li>
+                            <li><span class="username">testUs er13</span> <span class="score">83</span></li>
+                            <li><span class="username">test User14</span> <span class="score">91</span></li>
                         </ul>
                     </div>
                 </div>
                 <div class="gamepanel" id="screen">
+                    <img id="hand" src="../img/hand.png">
+                    <div class="screenelement" id="extractionbox">
+                        <img src="../img/extractionbox.png" width="300"> 
+                    </div>
+                    <div class="screenelement" id="extractionarea">
+                        <div id="questioncontainer">
+                            <h2 id="question">x<sup>2</sup> + 5x + 3</h2>
+                        </div>
+                    </div>
+                    <div class="screenelement" id="timeleft">
 
+                    </div>
                 </div>
+
                 <div class="gamepanel" id="info">
                     <h1>Info</h1>
-                    <h2>Estratti</h2>
-                    <h3>[EXTR]</h3>
-                    <h2>Da estrarre</h2>
-                    <h3>[TOEXTR]</h3>
-                    <h2>Tempo trascorso</h2>
-                    <h3>[T]</h3>
-                    <h2>Giocatori</h2>
-                    <h3>[PNUM]</h3>
+                    <div class="infobox">
+                        <h2>Estratti</h2>
+                        <h3 id="extractedcount">[EXTR]</h3>
+                    </div>
+                    <div class="infobox">
+                        <h2>Da estrarre</h2>
+                        <h3 id="toextractcount">[TOEXTR]</h3>
+                    </div>
+                    <div class="infobox">
+                        <h2>Tempo trascorso</h2>
+                        <h3 id="elapsedtime">[T]</h3>
+                    </div>
+                    <div class="infobox">
+                        <h2>Giocatori</h2>
+                        <h3 id="playercount">[PNUM]</h3>
+                    </div>
                 </div>
             </div>
         </section>

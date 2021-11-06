@@ -239,6 +239,15 @@ th
     background: #ffffff80;
     padding: 0;
     margin: 0;
+    overflow-y: hidden;
+    max-height: 1000px;
+    transition: max-height 1s linear;
+}
+
+.leaderboardupdate
+{
+    max-height: 85px !important;
+    transition: max-height 1s linear;
 }
 
 .leaderboardheaders h2
@@ -261,10 +270,16 @@ th
     right: 5px;
 }
 
+#positionscontainer
+{
+    position: relative;
+}
+
 #positions
 {
     width: 33%;
     position: absolute;
+    top: 0;
     left: 0;
     bottom: 0;
     text-align: left;
@@ -341,37 +356,8 @@ th
     border-top: none;
     border-right: none;
     padding-left: 10px;
-    transition: transform 2s;
 }
 
-.swapping
-{
-    border: 1px solid #000 !important;
-}
-
-.positive
-{
-    animation: positive 3.5s linear 1;
-    transition: .5s;
-}
-
-@keyframes positive
-{
-    50% {background: #00ff60a0;}
-    100% {background: transparent;}
-}
-
-.negative
-{
-    animation: negative 3.5s linear 1;
-    transition: .5s;
-}
-
-@keyframes negative
-{
-    50% {background: #ff0058a0;}
-    100% {background: transparent;}
-}
 .score
 {
     text-align: center;
@@ -386,10 +372,107 @@ th
 
 #screen
 {
+    overflow-y: hidden;
+    position: relative;
     width: 50%;
     height: 90vh;
     margin: auto;
     margin-top: 2.5vh;
+    background: #ffffffa0
+}
+
+.screenelement
+{
+    position: absolute;
+}
+
+#extractionbox
+{
+    bottom: 0;
+    left: 0;
+}
+
+#questioncontainer
+{
+    position: absolute;
+    width: max-content;
+    border: 8px solid #ff0000;
+    border-radius: 100px;
+    padding: 25px;
+    background: #ffe651;
+    color: #ff0000;
+    font-size: 2rem;
+    text-shadow: 2px 2px 2px #000;
+    font-weight: bold;
+    bottom: 140px;
+    left: -20px;
+    box-shadow: inset 0px 1px 1px 2px #000B;
+    transform: rotate(90deg) scale(0.4);
+}
+
+#hand
+{
+    position: absolute;
+    display: none;
+    top: -70px;
+    left: 220px;
+    width: 500px;
+    z-index: 9999;
+    filter: drop-shadow(3px 3px 10px #000);
+}
+
+@keyframes extraction
+{
+    10% {transform: translate(50px, -100px) rotate(80deg) scale(0.55);}
+    20% {transform: translate(100px, -200px) rotate(70deg) scale(0.60);}
+    30% {transform: translate(150px, -300px) rotate(60deg) scale(0.65);}
+    40% {transform: translate(200px, -350px) rotate(50deg) scale(0.70);}
+    50% {transform: translate(250px, -400px) rotate(40deg) scale(0.75);}
+    60% {transform: translate(300px, -350px) rotate(30deg) scale(0.80);}
+    70% {transform: translate(350px, -300px) rotate(20deg) scale(0.85);}
+    80% {transform: translate(350px, -250px) rotate(10deg) scale(0.9);}
+    90% {transform: translate(350px, -250px) rotate(0deg) scale(1);}
+    100% {transform: translate(350px, -250px) rotate(0deg) scale(1.2);}
+}
+
+@keyframes handslideinout
+{
+    0% {transform: translateY(-600px)}
+    50% {transform: translateY(0px)}
+    100% {transform: translateY(-600px)}
+}
+
+@keyframes removeextractednumber
+{
+    from {transform: translate(350px, -250px) rotate(0deg) scale(1.2);}
+    to {transform: translate(350px, -1200px) rotate(0deg) scale(1.2);}
+}
+
+.extractionanim
+{
+    animation: extraction 1.5s ease-in-out forwards;
+}
+
+.handsanim
+{
+   display: block !important;
+   animation: handslideinout 5s ease-in-out forwards;
+}
+
+.removeextractednumberanim
+{
+    animation: removeextractednumber 5s ease-in-out forwards;
+}
+
+#question
+{
+    text-shadow: 2px 2px 2px #000B;
+}
+
+#extractionarea
+{
+    bottom: 0;
+    border: 1px solid #000;;
 }
 
 #info
@@ -400,7 +483,9 @@ th
     background: #ffffff80;
 }
 
-#info h2,h3
+.infobox
 {
     color: #000;
+    padding: 10px;
+    font-size: 1.2rem;
 }
