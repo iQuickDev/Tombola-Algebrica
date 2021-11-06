@@ -475,6 +475,25 @@ th
     border: 1px solid #000;;
 }
 
+#timeleftcontainer
+{
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    padding: 20px;
+    font-size: 4rem;
+    border-radius: 50%;
+    width: 175px;
+    height: 175px;
+    background: #00ff00;
+    color: #000;
+}
+
+#timeleft
+{
+    margin-top: 10px;
+}
+
 #info
 {
     position: absolute;
