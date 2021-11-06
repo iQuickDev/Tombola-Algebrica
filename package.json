@@ -4,10 +4,10 @@
   },
   "name": "tombola-algebrica",
   "version": "1.0.0",
-  "type": "module",
   "main": "./backend",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.17.1",
     "ip": "^1.1.5"
   }
 }
