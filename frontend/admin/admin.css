@@ -10,6 +10,7 @@ body
     background: linear-gradient(-45deg, #5552ee, #e73c7e, #23a6d5, #23d5ab);
 	background-size: 300% 300%;
     animation: gradientbg 20s linear infinite;
+    color: white;
 }
 
 /* ------------------------ PRE-GAME ------------------------ */ 
@@ -20,7 +21,6 @@ body
 	50% {background-position: 100% 50%;}
 	100% {background-position: 0% 50%;}
 }
-
 
 .floatingformulas {
     position: absolute;
@@ -203,7 +203,7 @@ th
 
 #game
 {
-
+    position: relative;
 }
 
 .gamepanel
@@ -235,6 +235,7 @@ th
 {
     position: absolute;
     left: 40px;
+    top: 0px;
     background: #ffffff80;
     padding: 0;
     margin: 0;
@@ -332,7 +333,7 @@ th
 #leaderboardplayers li
 {
     position: relative;
-    width: fit-content;
+    width: 93%;
     height: 30px;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -340,9 +341,37 @@ th
     border-top: none;
     border-right: none;
     padding-left: 10px;
-    transition: transform .5s;
+    transition: transform 2s;
 }
 
+.swapping
+{
+    border: 1px solid #000 !important;
+}
+
+.positive
+{
+    animation: positive 3.5s linear 1;
+    transition: .5s;
+}
+
+@keyframes positive
+{
+    50% {background: #00ff60a0;}
+    100% {background: transparent;}
+}
+
+.negative
+{
+    animation: negative 3.5s linear 1;
+    transition: .5s;
+}
+
+@keyframes negative
+{
+    50% {background: #ff0058a0;}
+    100% {background: transparent;}
+}
 .score
 {
     text-align: center;
@@ -367,6 +396,11 @@ th
 {
     position: absolute;
     right: 40px;
-    top: 25px;
+    top: 0px;
     background: #ffffff80;
+}
+
+#info h2,h3
+{
+    color: #000;
 }
