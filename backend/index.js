@@ -42,7 +42,7 @@ players.added = (input) =>
 app.use((req, res, next) =>
 {
   if (!req.path.startsWith('/api/'))
-    req.url = path.join(req.ip == '::1' ? '/admin' : '/user', req.url)
+    req.url = path.join(isLocal(req.ip) ? '/admin' : '/user', req.url)
   else if (req.path != '/api/entry' && !entered)
     req.url = '/status/409'
 
@@ -57,7 +57,7 @@ app.all('/status/:code', (req, res) => res.status(parseInt(req.params.code)).end
 
 app.post('/api/entry', (req, res) =>
 {
-  if (req.ip == '::1')
+  if (isLocal(req.ip))
     entered = true
 
   res.json({ ip: ip.address() })
@@ -70,8 +70,7 @@ app.get('/api/players', (req, res) =>
 
 app.post('/api/players', (req, res) =>
 {
-  players.add(req.body)
-  res.status(201).end()
+  res.status(players.add(req.body) ? 201 : 409).end()
 })
 
 app.get('/api/players/echo', (req, res) =>
@@ -80,3 +79,8 @@ app.get('/api/players/echo', (req, res) =>
 })
 
 app.listen(8080)
+
+function isLocal(ip)
+{
+  return ip == '::1' || ip.endsWith('127.0.0.1')
+}

@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "run": "node ."
+    "test": "node ."
   },
   "name": "tombola-algebrica",
   "version": "1.0.0",
