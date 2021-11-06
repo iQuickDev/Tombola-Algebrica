@@ -58,22 +58,50 @@ async function StartGame()
   document.querySelector("#pregame").style.display = "none"
 }
 
-async function ShuffleLeaderboard(firstElementIndex, secondElementIndex)
+// async function SwapPlayer(firstElementIndex, secondElementIndex)
+// {
+//   let leaderboard = document.querySelector("#leaderboardplayers")
+//   let nodes = leaderboard.children
+//   let iterations = secondElementIndex - firstElementIndex
+//   let temp
+
+//   nodes[firstElementIndex].classList.add("swapping", "positive")
+//   nodes[secondElementIndex].classList.add("swapping", "negative")
+
+//   nodes[firstElementIndex].style.transform = "translateY(" + 41 * iterations + "px)" // 41px is the height of a list item btw (i love magic numbers)
+//   nodes[secondElementIndex].style.transform = "translateY(-" + 41 * iterations + "px)"
+
+//   temp = nodes[firstElementIndex].innerHTML
+//   nodes[firstElementIndex].innerHTML = nodes[secondElementIndex].innerHTML
+//   nodes[secondElementIndex].innerHTML = temp
+
+//   await new Promise(r => setTimeout(r, 1000))
+
+//   nodes[firstElementIndex].style.transform = "translateY(0)"
+//   nodes[secondElementIndex].style.transform = "translateY(0)"
+  
+//   await new Promise(r => setTimeout(r, 2000))
+
+//   nodes[firstElementIndex].classList.remove("swapping", "positive")
+//   nodes[secondElementIndex].classList.remove("swapping", "negative")
+// }
+
+async function SortLeaderboard()
 {
-    let list = document.querySelector("#leaderboardplayers")
-    let nodes = list.children
-    let iterations = secondElementIndex - firstElementIndex
-    let temp
+  let leaderboard = document.querySelector("#leaderboardplayers")
+  let scores = leaderboard.querySelectorAll(".score")
+  let usernames = leaderboard.children
+  let scoresAndPlayers = []
 
-    nodes[firstElementIndex].style.transform = "translateY(" + 41 * iterations + "px)"
-    nodes[secondElementIndex].style.transform = "translateY(-" + 41 * iterations + "px)"
+  for (let i = 0; i < scores.length; i++)
+  {
+    scoresAndPlayers.push({"username": usernames[i].textContent.slice(0, -2).replace(" ", ""), "score": scores[i].innerHTML})
+  }
 
-    temp = nodes[firstElementIndex].innerHTML
-    nodes[firstElementIndex].innerHTML = nodes[secondElementIndex].innerHTML
-    nodes[secondElementIndex].innerHTML = temp
+  scoresAndPlayers.sort((a, b) => b.score - a.score)
 
-    await new Promise(r => setTimeout(r, 250))
-
-    nodes[firstElementIndex].style.transform = "translateY(0)"
-    nodes[secondElementIndex].style.transform = "translateY(0)"
+  for (let i = 0; i < leaderboard.children.length; i++)
+  {
+    usernames[i].innerHTML = scoresAndPlayers[i].username + " <span class='score'>" + scoresAndPlayers[i].score + "</span>"
+  }
 }
