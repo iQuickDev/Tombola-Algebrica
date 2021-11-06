@@ -2,33 +2,37 @@ var formulas = document.getElementsByTagName("cite");
 var winWidth = window.innerWidth - 200;
 var winHeight = window.innerHeight - 200;
 
-window.onload = () => {
-  animateElement("#formula1");
-  animateElement("#formula2");
-  animateElement("#formula3");
-  animateElement("#formula4");
-  animateElement("#formula5");
-  animateElement("#formula6");
-  animateElement("#formula7");
-  animateElement("#formula8");
+window.onload = () =>
+{
+  animateElement("#formula1")
+  animateElement("#formula2")
+  animateElement("#formula3")
+  animateElement("#formula4")
+  animateElement("#formula5")
+  animateElement("#formula6")
+  animateElement("#formula7")
+  animateElement("#formula8")
 }
 
 document.querySelector("#startgame").addEventListener("click", StartGame)
 
-function makeNewPosition() {
+function makeNewPosition()
+{
   var nh = Math.floor(Math.random() * $(window).height() - 50);
   var nw = Math.floor(Math.random() * $(window).width() - 50);
   return [nh, nw];
 }
 
-function animateElement(element) {
+function animateElement(element)
+{
   var newq = makeNewPosition();
-  $(element).animate({ top: newq[0], left: newq[1] }, 2000, () => {
+  $(element).animate({ top: newq[0], left: newq[1] }, 2500, () => {
     animateElement(element);
   })
 }
 
-async function SimulatePlayerJoin(amount) {
+async function SimulatePlayerJoin(amount)
+{
   for (let i = 0; i < amount; i++) {
     let testPlayer = document.createElement("h4")
     testPlayer.classList.add("player")
@@ -44,13 +48,15 @@ async function SimulatePlayerJoin(amount) {
   }
 }
 
-async function StartGame() {
+async function StartGame()
+{
   document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
   await new Promise(r => setTimeout(r, 1000))
   document.querySelector("#pregame").style.display = "none"
 }
 
-async function SortLeaderboard() {
+async function SortLeaderboard()
+{
   let leaderboard = document.querySelector("#leaderboardplayers")
   let scores = leaderboard.querySelectorAll(".score")
   let usernames = leaderboard.querySelectorAll(".username")
@@ -80,10 +86,11 @@ function NewExtraction()
   document.querySelector("#questioncontainer").classList.toggle("extractionanim")
 }
 
-async function ClearExtraction() {
+async function ClearExtraction()
+{
   document.querySelector("#hand").classList.toggle("handsanim")
 
-  await new Promise(r => setTimeout(r, 2150))
+  await new Promise(r => setTimeout(r, 1100))
 
   document.querySelector("#questioncontainer").classList.toggle("removeextractednumberanim")
 
