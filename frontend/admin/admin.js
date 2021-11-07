@@ -5,6 +5,7 @@ var elapsedtime = 0
 var extracted = 0
 var toExtract = 0
 var timeLeft = 0
+var isIdle = true;
 
 window.onload = () =>
 {
@@ -19,6 +20,7 @@ window.onload = () =>
 }
 
 document.querySelector("#startgame").addEventListener("click", StartGame)
+document.querySelector("#extractionbox").addEventListener("click", NewExtraction)
 
 function makeNewPosition()
 {
@@ -56,6 +58,8 @@ async function StartGame()
 {
   StartTimer()
   document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
+  document.querySelector("#game").style.display = "block"
+  document.querySelector("#game").style.animation = "showgamepanel 1s linear"
   await new Promise(r => setTimeout(r, 1000))
   document.querySelector("#pregame").style.display = "none"
 }
@@ -88,7 +92,17 @@ async function SortLeaderboard()
 
 function NewExtraction()
 {
-  timeLeft = 180
+  document.querySelector("#questioncontainer").style.display = "block"
+  document.querySelector("#extractionbox").style.pointerEvents = "none"
+  if (document.querySelector("#questioncontainer").classList.contains("removeextractednumberanim"))
+  {
+    document.querySelector("#questioncontainer").classList.remove("removeextractednumberanim")
+    document.querySelector("#questioncontainer").classList.remove("extractionanim")
+  }
+
+  isIdle = false
+  timeLeft = 120
+
   document.querySelector("#questioncontainer").classList.toggle("extractionanim")
   extracted++
   document.querySelector("#extractedcount").textContent = extracted
@@ -97,6 +111,7 @@ function NewExtraction()
 
 async function ClearExtraction()
 {
+  document.querySelector("#extractionbox").style.pointerEvents = "all"
   document.querySelector("#hand").classList.toggle("handsanim")
 
   await new Promise(r => setTimeout(r, 1100))
@@ -106,7 +121,38 @@ async function ClearExtraction()
   await new Promise(r => setTimeout(r, 3000))
 
   document.querySelector("#hand").classList.toggle("handsanim")
+  SortLeaderboard()
 }
+
+var timerPie = document.querySelector(".timechart")
+
+var timerPieElement = new EasyPieChart(timerPie,
+{
+  barColor: '#00ff00',
+  trackColor: false,
+  scaleLength: 0,
+  lineCap: "round",
+  lineWidth: 10,
+  size: 175,
+  rotate: 0
+})
+
+function GetTimePercentage()
+{
+  let percentage = (timeLeft / 120) * 100
+
+  if (percentage > 75 && percentage < 100)
+      timerPieElement.options.barColor = "#00ff00"
+  else if (percentage > 50 && percentage < 75)
+      timerPieElement.options.barColor = "#a6ff00"
+  else if (percentage > 25 && percentage < 50)
+      timerPieElement.options.barColor = "#ffff00"
+  else if (percentage < 10)
+      timerPieElement.options.barColor = "#ff0000"
+
+  return percentage
+}
+
 
 function StartTimer()
 {
@@ -114,9 +160,17 @@ function StartTimer()
   let timeLeftLabel = document.querySelector("#timeleft")
   let interval = setInterval(() => {
     elapsedtime++
-    if (timeLeft > 0)
-    timeLeft--
-    timeLeftLabel.textContent = timeLeft
+    if (timeLeft > 0 && !isIdle)
+    {
+      timeLeft--
+      timeLeftLabel.textContent = timeLeft
+      timerPieElement.update(GetTimePercentage())
+    }
+    else if (timeLeft == 0 && !isIdle)
+    {
+      ClearExtraction()
+      isIdle = true
+    }
     timer.textContent = new Date(elapsedtime * 1000).toISOString().substr(11, 8);
 
   }, 1000)
