@@ -458,7 +458,7 @@ th
 @keyframes handslideinout
 {
     0% {transform: translateY(-600px)}
-    50% {transform: translateY(0px)}
+    50% {transform: translateY(100px)}
     100% {transform: translateY(-600px)}
 }
 

@@ -101,7 +101,7 @@ function NewExtraction()
   }
 
   isIdle = false
-  timeLeft = 120
+  timeLeft = 5
 
   document.querySelector("#questioncontainer").classList.toggle("extractionanim")
   extracted++
@@ -114,7 +114,7 @@ async function ClearExtraction()
   document.querySelector("#extractionbox").style.pointerEvents = "all"
   document.querySelector("#hand").classList.toggle("handsanim")
 
-  await new Promise(r => setTimeout(r, 1100))
+  await new Promise(r => setTimeout(r, 1000))
 
   document.querySelector("#questioncontainer").classList.toggle("removeextractednumberanim")
 
