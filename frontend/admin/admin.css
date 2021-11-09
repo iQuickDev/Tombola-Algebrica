@@ -394,20 +394,14 @@ th
 
 #extractionbox
 {
-    bottom: 0;
-    left: 0;
+    bottom: 50px;
+    left: 50px;
     transition: .25s;
 }
 
 #extractionbox:hover
 {
-    transform: rotate(15deg) scale(1.1);
-    transition: .25s;
-}
-
-#extractionbox:active
-{
-    transform: scale(0.9);
+    transform: rotate(15deg) scale(0.9);
     transition: .25s;
 }
 

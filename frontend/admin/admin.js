@@ -166,5 +166,5 @@ function StartTimer()
     }
     timer.textContent = new Date(elapsedtime * 1000).toISOString().substr(11, 8);
 
-  }, 100)
+  }, 1000)
 }
