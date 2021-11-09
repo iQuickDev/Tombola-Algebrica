@@ -458,7 +458,7 @@ th
 @keyframes handslideinout
 {
     0% {transform: translateY(-600px)}
-    50% {transform: translateY(100px)}
+    50% {transform: translateY(50px)}
     100% {transform: translateY(-600px)}
 }
 
@@ -511,12 +511,6 @@ th
 .timechart
 {
     transform: translateY(-90px);
-    animation: timeranim 20s linear forwards;
-}
-
-@keyframes timeranim
-{
-    to {filter: invert(19%) sepia(84%) saturate(7479%) hue-rotate(0deg) brightness(92%) contrast(119%);}
 }
 
 #timeleft

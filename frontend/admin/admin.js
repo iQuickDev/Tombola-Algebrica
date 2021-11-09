@@ -5,6 +5,7 @@ var elapsedtime = 0
 var extracted = 0
 var toExtract = 0
 var timeLeft = 0
+var initialTime = 100
 var isIdle = true;
 
 window.onload = () =>
@@ -101,7 +102,8 @@ function NewExtraction()
   }
 
   isIdle = false
-  timeLeft = 5
+  initialTime = 100
+  timeLeft = initialTime
 
   document.querySelector("#questioncontainer").classList.toggle("extractionanim")
   extracted++
@@ -114,7 +116,7 @@ async function ClearExtraction()
   document.querySelector("#extractionbox").style.pointerEvents = "all"
   document.querySelector("#hand").classList.toggle("handsanim")
 
-  await new Promise(r => setTimeout(r, 1000))
+  await new Promise(r => setTimeout(r, 900))
 
   document.querySelector("#questioncontainer").classList.toggle("removeextractednumberanim")
 
@@ -128,7 +130,7 @@ var timerPie = document.querySelector(".timechart")
 
 var timerPieElement = new EasyPieChart(timerPie,
 {
-  barColor: '#00ff00',
+  barColor: '#8d00ff',
   trackColor: false,
   scaleLength: 0,
   lineCap: "round",
@@ -139,16 +141,7 @@ var timerPieElement = new EasyPieChart(timerPie,
 
 function GetTimePercentage()
 {
-  let percentage = (timeLeft / 120) * 100
-
-  if (percentage > 75 && percentage < 100)
-      timerPieElement.options.barColor = "#00ff00"
-  else if (percentage > 50 && percentage < 75)
-      timerPieElement.options.barColor = "#a6ff00"
-  else if (percentage > 25 && percentage < 50)
-      timerPieElement.options.barColor = "#ffff00"
-  else if (percentage < 10)
-      timerPieElement.options.barColor = "#ff0000"
+  let percentage = (timeLeft / initialTime) * 100
 
   return percentage
 }
@@ -173,5 +166,5 @@ function StartTimer()
     }
     timer.textContent = new Date(elapsedtime * 1000).toISOString().substr(11, 8);
 
-  }, 1000)
+  }, 100)
 }
