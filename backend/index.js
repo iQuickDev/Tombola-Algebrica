@@ -6,6 +6,7 @@ const ip = require('ip')
 const express = require('express')
 
 let entered = false
+const port = 8080
 const echo = new Wrapper(null)
 const players = new PlayerSet()
 const playersQueue = [ ]
@@ -41,14 +42,19 @@ players.added = (input) =>
 
 app.use((req, res, next) =>
 {
-  if (!req.path.startsWith('/api/'))
-    req.url = path.join(isLocal(req.ip) ? '/admin' : '/user', req.url)
-  else if (req.path != '/api/entry' && !entered)
-    req.url = '/status/409'
+  if (!req.path.startsWith('/common/'))
+  {
+    if (!req.path.startsWith('/api/'))
+      req.url = path.join(isLocal(req.ip) ? '/admin' : '/user', req.url)
+    else if (req.path != '/api/entry' && !entered)
+      req.url = '/status/409'
+  }
 
   next()
 })
 
+// Static server.
+app.use('/common', express.static(path.join(__dirname, '../frontend/common')))
 app.use('/admin', express.static(path.join(__dirname, '../frontend/admin')))
 app.use('/user', express.static(path.join(__dirname, '../frontend/user')))
 app.get('/admin', (req, res) => res.redirect('/admin.html'))
@@ -60,7 +66,7 @@ app.post('/api/entry', (req, res) =>
   if (isLocal(req.ip))
     entered = true
 
-  res.json({ ip: ip.address() })
+  res.json({ address: `${ip.address()}:${port}` })
 })
 
 app.get('/api/players', (req, res) =>
@@ -78,7 +84,7 @@ app.get('/api/players/echo', (req, res) =>
   echo.value = res
 })
 
-app.listen(8080)
+app.listen(port)
 
 function isLocal(ip)
 {
