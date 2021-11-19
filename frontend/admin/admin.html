@@ -48,6 +48,7 @@
                         Quando il gioco inizierà riceverai una scheda con 15 numeri casuali, si applicano le regole
                         classiche della tombola
                         ovvero:
+                        <br style="margin-bottom: 10px">
                     <table class="descriptiontable">
                         <thead>
                             <th>Punti (sulla stessa riga)</th>
@@ -88,8 +89,7 @@
                     <br>
                     in caso lo sia si dovrà premere sul numero stesso per segnarlo come "estratto", altrimenti basterà
                     continuare a giocare.
-                    <br style="margin-bottom: 20px">
-                    <h2>AMBO, TERNA, QUATERNA, CINQUINA E TOMBOLA</h2>
+                    <h2 style="margin-top: 20px;">AMBO, TERNA, QUATERNA, CINQUINA E TOMBOLA</h2>
                     <br>
                     Nel caso un giocatore faccia ambo, terna, quaterna, cinquina o addirittura tombola il sistema lo
                     segnalerà.
@@ -101,12 +101,12 @@
                     estratto.
                     <br>
                     Ogni errore detrarrà <strong>1</strong> punto dal giocatore, quindi se ad esempio un giocatore ha 15
-                    punti (tombola)
+                    punti (tombola) con 3 errori
                     <br>
-                    con 3 errori ed un altro giocatore ha 14 punti con 0 errori, il giocatore con 15 punti e 3 errori
-                    arriverà secondo.
-                    <br style="margin-bottom: 20px">
-                    <table class="descriptiontable">
+                    ed un altro giocatore ha 14 punti con 0 errori, il giocatore con 15 punti e 3 errori
+                    sarà secondo nella classifica finale.
+                    <br>
+                    <table class="descriptiontable" style="margin-top: 20px">
                         <thead>
                             <th>Posizione</th>
                             <th>Punti</th>
@@ -140,12 +140,11 @@
                             </tr>
                         </tbody>
                     </table>
-
                     </p>
                 </div>
                 <br>
                 <div id="joinedplayers">
-                    <h2>Partecipanti (<span id="participantscount">[NUM]</span>)</h2>
+                    <h2>Partecipanti ( <div id="participantscountwrapper"> <span id="participantscount"> 0 </span> </div> )</h2>
                     <div id="playerscontainer">
                     </div>
                 </div>
@@ -166,6 +165,7 @@
                                 <li class="leaderboardposition" id="first">1°</li>
                                 <li class="leaderboardposition" id="second">2°</li>
                                 <li class="leaderboardposition" id="third">3°</li>
+                                <li class="leaderboardposition">4°</li>
                             </ul>
                         </div>
                     </div>
@@ -175,6 +175,7 @@
                             <li><span class="username">testUser1</span> <span class="score">43</span></li>
                             <li><span class="username">testUser2</span> <span class="score">27</span></li>
                             <li><span class="username">testUser3</span> <span class="score">91</span></li>
+                            <li><span class="username">testUser3</span> <span class="score">92</span></li>
                         </ul>
                     </div>
                 </div>
@@ -192,6 +193,122 @@
                         <h2 id="timeleft">0</h2>
                         <div class="timechart" data-percent="0"></div>
                     </div>
+
+                    <div id="preendgame">
+                        <h2 id="winnermessage"><span id="winner">player</span> HA FATTO TOMBOLA!</h2>
+                    </div>
+
+                    <div id="endgame">
+                        <table class="resultstable">
+                            <thead>
+                                <th>Posizione</th>
+                                <th>Nome</th>
+                                <th>Punti</th>
+                                <th>Errori</th>
+                                <th>Punti Effettivi</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                <td>1°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>2°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>3°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>4°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>5°</td>
+                                <td>testPlayer01</td>
+                                <td>15</td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                     </div>
                 </div>
 
                 <div class="gamepanel" id="info">
@@ -218,7 +335,7 @@
     </div>
     <script src="easypiechart.js"></script>
     <script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js></script>
-    <script type="module" src="admin.js"></script>
+    <script src="admin.js"></script>
 </body>
 
 </html>
