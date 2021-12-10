@@ -1,0 +1,34 @@
+.fraction {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 4px;
+}
+
+.fraction hr {
+    margin: 0;
+    background: red;
+    border: 2px solid red;
+    box-shadow: 2px 2px 2px #000B;
+}
+
+.fraction.limit {
+    margin-right: 8px;
+}
+
+.fraction.limit:not(.fraction-within) {
+    vertical-align: top;
+}
+
+.fraction.limit hr {
+    border: 0;
+}
+
+.fraction.limit :first-child {
+    line-height: 0;
+}
+
+.fraction.limit :last-child {
+    display: block;
+    line-height: 0;
+    font-size: 1.5rem;
+}

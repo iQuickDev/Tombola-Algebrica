@@ -3,7 +3,7 @@ var winWidth = window.innerWidth - 200
 var winHeight = window.innerHeight - 200
 var elapsedtime = 0
 var extracted = 0
-var toExtract = 10
+var toExtract = 90
 var timeLeft = 0
 var initialTime = 100
 var isIdle = true
@@ -127,7 +127,7 @@ function NewExtraction()
   }
 
   isIdle = false
-  initialTime = 100
+  initialTime = 3
   timeLeft = initialTime
 
   document.querySelector("#questioncontainer").classList.toggle("extractionanim")

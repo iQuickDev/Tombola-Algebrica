@@ -1,4 +1,5 @@
 @import 'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap';
+@import 'fractions.css';
 
 *
 {
@@ -477,10 +478,11 @@ th
     font-size: 2rem;
     text-shadow: 2px 2px 2px #000;
     font-weight: bold;
-    bottom: 160px;
-    left: -50px;
+    top: 65%;
+    left: 25%;
     box-shadow: inset 0px 1px 1px 2px #000B;
     transform: rotate(90deg) scale(0.4);
+    transform-origin: top left;
     display: none;
 }
 
@@ -497,16 +499,16 @@ th
 
 @keyframes extraction
 {
-    10% {transform: translate(50px, -100px) rotate(80deg) scale(0.55);}
-    20% {transform: translate(100px, -200px) rotate(70deg) scale(0.60);}
-    30% {transform: translate(150px, -300px) rotate(60deg) scale(0.65);}
-    40% {transform: translate(200px, -350px) rotate(50deg) scale(0.70);}
-    50% {transform: translate(250px, -400px) rotate(40deg) scale(0.75);}
-    60% {transform: translate(300px, -350px) rotate(30deg) scale(0.80);}
-    70% {transform: translate(350px, -300px) rotate(20deg) scale(0.85);}
-    80% {transform: translate(350px, -250px) rotate(10deg) scale(0.9);}
-    90% {transform: translate(350px, -250px) rotate(0deg) scale(1);}
-    100% {transform: translate(350px, -250px) rotate(0deg) scale(1.2);}
+    10% {top: 60%; left: 30%; transform: translate(-5%, -5%) rotate(80deg) scale(0.55);}
+    20% {top: 53%; left: 32.5%; transform: translate(-10%, -10%) rotate(70deg) scale(0.60);}
+    30% {top: 46%; left: 35%; transform: translate(-15%, -15%) rotate(60deg) scale(0.65);}
+    40% {top: 39%; left: 37.5%; transform: translate(-20%, -20%) rotate(50deg) scale(0.70);}
+    50% {top: 32%; left: 40%; transform: translate(-25%, -25%) rotate(40deg) scale(0.75);}
+    60% {top: 27%; left: 42.5%; transform: translate(-30%, -30%) rotate(30deg) scale(0.80);}
+    70% {top: 32%; left: 45%; transform: translate(-35%, -35%) rotate(20deg) scale(0.85);}
+    80% {top: 39%; left: 47%; transform: translate(-40%, -40%) rotate(10deg) scale(0.9);}
+    90% {top: 46%; left: 48.5%; transform: translate(-45%, -45%) rotate(5deg) scale(1);}
+    100% {top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(0deg) scale(1);}
 }
 
 @keyframes handslideinout
@@ -518,13 +520,13 @@ th
 
 @keyframes removeextractednumber
 {
-    from {transform: translate(350px, -250px) rotate(0deg) scale(1.2);}
-    to {transform: translate(350px, -1200px) rotate(0deg) scale(1.2);}
+    from {transform: translate(0px, -300px) rotate(0deg)}
+    to {transform: translate(0px, -1200px) rotate(0deg)}
 }
 
 .extractionanim
 {
-    animation: extraction 1.5s ease-in-out forwards;
+    animation: extraction 1s linear forwards;
 }
 
 .handsanim
@@ -540,13 +542,11 @@ th
 
 #question
 {
+    font-size: 1.5em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
     text-shadow: 2px 2px 2px #000B;
-}
-
-#extractionarea
-{
-    bottom: 0;
-    border: 1px solid #000;;
 }
 
 #timeleftcontainer

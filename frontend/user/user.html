@@ -4,9 +4,75 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
     <title>Tombola Algebrica - USER</title>
 </head>
 <body>
-    <h1>test</h1>
+    <header id="header">
+        <h1>Tombola Algebrica</h1>
+    </header>
+
+    <p id="infoparagraph">Se riesci a visualizzare questa pagina significa che sei sulla strada giusta. Inserisci il tuo username e premi sul pulsante "Pronto", il regolamento è consultabile sulla lavagna.</p>
+
+    <div id="pregame">
+        
+        <h3>Inserisci il tuo username</h3>
+        <input type="text" placeholder="Username" id="username" maxlength="16" minlength="2">
+        <button type="button" id="ready">Pronto</button>
+    </div>
+
+    <div id="gamegrid" class="hidden">
+        <h1 id="gridusername">username</h1>
+        <table id="gameboard">
+        <tr id="row-1">
+            <td id="0">&nbsp;</td>
+            <td id="9">&nbsp;</td>
+            <td id="18">&nbsp;</td>
+        </tr>
+        <tr id="row-2">
+            <td id="1">&nbsp;</td>
+            <td id="10">&nbsp;</td>
+            <td id="19">&nbsp;</td>
+        </tr>
+        <tr id="row-3">
+            <td id="2">&nbsp;</td>
+            <td id="11">&nbsp;</td>
+            <td id="20">&nbsp;</td>
+        </tr>
+        <tr id="row-4">
+            <td id="3">&nbsp;</td>
+            <td id="12">&nbsp;</td>
+            <td id="21">&nbsp;</td>
+        </tr>
+        <tr id="row-5">
+            <td id="4">&nbsp;</td>
+            <td id="13">&nbsp;</td>
+            <td id="22">&nbsp;</td>
+        </tr>
+        <tr id="row-6">
+            <td id="5">&nbsp;</td>
+            <td id="14">&nbsp;</td>
+            <td id="23">&nbsp;</td>
+        </tr>
+        <tr id="row-7">
+            <td id="6">&nbsp;</td>
+            <td id="15">&nbsp;</td>
+            <td id="24">&nbsp;</td>
+        </tr>
+        <tr id="row-8">
+            <td id="7">&nbsp;</td>
+            <td id="16">&nbsp;</td>
+            <td id="25">&nbsp;</td>
+        </tr>
+        <tr id="row-9">
+            <td id="8">&nbsp;</td>
+            <td id="17">&nbsp;</td>
+            <td id="26">&nbsp;</td>
+        </tr>
+        </table>
+        <p>ovviamente ambo, terna, quaterna e cinquina vengono considerate verticalmente</p>
+    </div>
+
+    <script src="main.js"></script>
 </body>
 </html>
