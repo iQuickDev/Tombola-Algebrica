@@ -122,20 +122,48 @@ p
     width: 100%;
     height: 100%;
     margin: auto;
-    padding: 10px;
-    border-collapse: collapse;
+    padding: 5px;
 }
 
 #gameboard td
 {
+    font-size: 1.5rem;
     border: 1px solid #000;
-    border-collapse: collapse;
     font-weight: bold;
+    width: 20px;
+    height: 50px;
+    cursor: pointer;
+    user-select: none;
+}
+
+#cell-0
+{
+    border-top-left-radius: 10px;
+}
+
+#cell-8
+{
+    border-bottom-left-radius: 10px;
+}
+
+#cell-18
+{
+    border-top-right-radius: 10px;
+}
+
+#cell-26
+{
+    border-bottom-right-radius: 10px;
 }
 
 .marked
 {
     color: #F00;
+}
+
+.locked
+{
+    color: #F005;
 }
 
 @keyframes dragupper

@@ -228,7 +228,7 @@ th
 
 @keyframes showgamepanel
 {
-    to {transform: translateY(-920px);}
+    to {transform: translateY(-1050px);}
 }
 
 #game
@@ -520,8 +520,8 @@ th
 
 @keyframes removeextractednumber
 {
-    from {transform: translate(0px, -300px) rotate(0deg)}
-    to {transform: translate(0px, -1200px) rotate(0deg)}
+    from {top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(0deg) scale(1);}
+    to {top: 50%; left: 50%; transform: translate(-50%, -1000px) rotate(0deg) scale(1);}
 }
 
 .extractionanim

@@ -1,17 +1,19 @@
 var root = document.documentElement
 root.addEventListener("click", () => root.requestFullscreen())
 
+var originServer = `http://${location.hostname}:${location.port}`
+let maxAnswers = 2
 var isMarkable = true
 var username = ""
 
 document.querySelector("#ready").onclick = JoinGame
 
 async function JoinGame()
-{   
+{
     username = document.querySelector("#username").value
 
     if (username.length < 1)
-    return
+        return
 
     document.querySelector("#pregame").style.animation = "dragup 1s ease-in-out forwards"
     document.querySelector("#infoparagraph").style.animation = "dragup 1s ease-in-out forwards"
@@ -24,7 +26,31 @@ async function JoinGame()
     PrepareGrid()
 }
 
-function SendGridToServer()
+function NewRound()
+{
+    let fetchedMaxAnswers = 2 /* to replace with API call */
+    isMarkable = true
+    maxAnswers = fetchedMaxAnswers
+}
+
+function EndRound()
+{
+    isMarkable = false
+
+    let cells = document.querySelectorAll("#gameboard td")
+
+    for (let i = 0; i < cells.length; i++)
+    {
+        if (cells[i].classList.contains("marked"))
+        {
+            cells[i].classList.add("locked")
+        }
+    }
+
+    SendGridToServer()
+}
+
+async function SendGridToServer()
 {
     let cells = document.querySelectorAll("#gameboard td")
     let gridArray = []
@@ -34,14 +60,14 @@ function SendGridToServer()
 
     for (let i = 0; i < cells.length; i++)
     {
-        if (parseInt(cells[i].id) < 9)
+        if (parseInt(cells[i].id.replace("cell-", "")) < 9)
         {
             firstColumnArray.push({
                 value: cells[i].innerText,
                 marked: cells[i].classList.contains("marked")
             })
         }
-        else if (parseInt(cells[i].id) < 18)
+        else if (parseInt(cells[i].id.replace("cell-", "")) < 18)
         {
             secondColumnArray.push({
                 value: cells[i].innerText,
@@ -57,12 +83,9 @@ function SendGridToServer()
         }
     }
 
-    gridArray.push(firstColumnArray)
-    gridArray.push(secondColumnArray)
-    gridArray.push(thirdColumnArray)
-
-    console.log(gridArray)
+    gridArray.push(firstColumnArray, secondColumnArray, thirdColumnArray)
 }
+
 
 async function PrepareGrid()
 {
@@ -72,41 +95,22 @@ async function PrepareGrid()
 
     cells.forEach(e => e.textContent = e.id)
 
-    let firstColumn = []
-    let secondColumn = []
-    let thirdColumn = []
-
     for (let i = 0; i < cells.length; i++)
     {
         cells[i].addEventListener("click", () =>
         {
-            if (isMarkable && !cells[i].classList.contains("marked") && cells[i].textContent != String.fromCharCode(160)) /* 160 = char code for &nbsp; */
+            if (isMarkable && maxAnswers > 0 && !cells[i].classList.contains("locked") && !cells[i].classList.contains("marked") && cells[i].textContent != String.fromCharCode(160)) /* 160 = char code for &nbsp; */
             {
                 cells[i].classList.add("marked")
+                maxAnswers--
             }
-            else if (isMarkable && cells[i].classList.contains("marked"))
+            else if (isMarkable && !cells[i].classList.contains("locked") && cells[i].classList.contains("marked"))
             {
                 cells[i].classList.remove("marked")
+                maxAnswers++
             }
         })
-
-        if (parseInt(cells[i].id) < 9)
-        {
-            firstColumn.push(cells[i])
-        }
-        else if (parseInt(cells[i].id) < 18)
-        {
-            secondColumn.push(cells[i])
-        }
-        else
-        {
-            thirdColumn.push(cells[i])
-        }
     }
-
-    console.log(firstColumn)
-    console.log(secondColumn)
-    console.log(thirdColumn)
 
     document.querySelector("#gamegrid").classList.remove("hidden")
     document.querySelector("#gamegrid").style.animation = "dragupper 1s ease-in-out forwards"

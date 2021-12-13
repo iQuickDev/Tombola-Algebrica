@@ -127,7 +127,7 @@ function NewExtraction()
   }
 
   isIdle = false
-  initialTime = 3
+  initialTime = 30
   timeLeft = initialTime
 
   document.querySelector("#questioncontainer").classList.toggle("extractionanim")
