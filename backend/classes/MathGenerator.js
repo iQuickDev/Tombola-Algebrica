@@ -72,9 +72,15 @@ module.exports = class MathGenerator
     return Math.floor(Math.random()) == 1
   }
 
-  randomInt(min, max)
+  randomInt(min, max, exclusionPredicate = () => false)
   {
-    return Math.floor(Math.random() * (max - min + 1) + min)
+    let r
+
+    do
+      r = Math.floor(Math.random() * (max - min + 1) + min)
+    while (exclusionPredicate(r))
+
+    return r
   }
 
   randomEquation(set, forceEqZero = false, x1 = null, x2 = null, alpha = null, xDen1 = 1, xDen2 = 1)
@@ -109,18 +115,12 @@ module.exports = class MathGenerator
     else if (this.randomInt(1, 5) <= 3)
     {
       ++complexity
-
-      do
-        a = this.randomInt(-25, 25)
-      while (a == 0 || a == 1)
+      a = this.randomInt(-25, 25, r => r == 0 || a == 1)
 
       if (this.randomInt(1, 3) <= 1)
       {
         ++complexity
-
-        do
-          aDen = this.randomInt(2, 25)
-        while (aDen / this.gcd(a, aDen) == 1)
+        aDen = this.randomInt(2, 25, r => r / this.gcd(a, r) == 1)
       }
     }
 
@@ -170,15 +170,17 @@ module.exports = class MathGenerator
       }
       else
       {
-        if (aDen == bDen && (bDen == cDen || cDen == 0) || aDen == cDen && bDen == 0)
-        {
-          complexity -= .5
-          aBlock = a *= 3
-          aDen *= 3
-        }
-
         if (aDen != 1)
+        {
+          if (aDen == bDen && (bDen == cDen || cDen == 0) || aDen == cDen && bDen == 0)
+          {
+            complexity -= .5
+            aBlock = a *= 3
+            aDen *= 3
+          }
+
           aBlock &&= this.#fractionAsCoefficient(a, aDen)
+        }
 
         if (bDen != 1)
           bBlock &&= this.#fractionAsCoefficient(b, bDen)
@@ -257,25 +259,8 @@ module.exports = class MathGenerator
 
   randomLimitZZ(set)
   {
-    // [N(K - X)] / [D(K - Y)]
-    // [N(R/N - R(Z + 1)/N)] / [N(R/N - (R + Z)/N)]
-    // R = 8, N = 2, Z = 3
-    //   K = R/N = 8/2 = 4
-    //   X = R(Z + 1)/N = 8(3 + 1)/2 = 16
-    //   Y = (R + Z)/N = (8 + 3)/2 = 11/2
-    // N(K - X) = 2(4 - 16) = -24
-    // N(K - Y) = 2(4 - 11/2) = -3
-    // (-24)/(-3) = 8
-    //
-    // K = R/N
-    // X = K(Z + 1)
-    // Y = K + Z/N
-    // [(Kn*Nn)/(Kd*Nn) + (Z*Nd*Kd)/(Nn*Kd)]
-
-
-    const alpha = { num: 1, den: 1 }
+    const alpha = { num: this.randomInt(-8, 8, r => r == 0 || r == 1), den: 1 }
     let complexity = 1, limR = set[this.randomInt(0, set.length - 1)], isOne = false, isZero = false
-    console.log('limR: ' + limR)
     set.splice(set.indexOf(limR), 1)
 
     if (limR == 1)
@@ -285,34 +270,28 @@ module.exports = class MathGenerator
     }
     else if (limR == 0 && this.randomInt(1, 4) <= 3)
     {
-      console.log('here')
       isZero = true
       limR = this.randomInt(-8, 8)
     }
 
-    do
-      alpha.num = this.randomInt(-8, 8)
-    while (alpha.num == 0 || alpha.num == 1)
-
     if (this.randomInt(1, 5) <= 1)
     {
       ++complexity
-
-      do
-        alpha.den = this.randomInt(2, 8)
-      while (alpha.den / this.gcd(alpha.num, alpha.den) == 1)
+      alpha.den = this.randomInt(2, 8, r => r / this.gcd(alpha.num, r) == 1)
     }
 
-    let sign = alpha.num / Math.abs(alpha.num), salt, den, approach, xTop, xBottom
+    let sign = alpha.num / Math.abs(alpha.num)
+    let multiplier = this.randomInt(-8, 8)
+    let salt = this.randomInt(-8, 8)
+    let den = alpha.num * sign
+    let approach = (limR + salt) * alpha.den * sign
+    let xTop, xBottom
 
     do
     {
-      salt = this.randomInt(-8, 8)
-      den = alpha.num * sign
-      approach = limR * alpha.den * sign
-      xTop = isZero ? approach : limR * (salt + 1) * alpha.den * sign
-      xBottom = (limR + salt) * alpha.den * sign
-    } while (salt == limR || xTop == xBottom);
+      xTop = isZero ? approach : (limR * multiplier + limR + salt) * alpha.den * sign
+      xBottom = (limR + multiplier + salt) * alpha.den * sign
+    } while (xTop == xBottom)
 
     const equationTop = this.randomEquation(
       null,
