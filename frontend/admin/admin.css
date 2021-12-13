@@ -24,7 +24,8 @@ body
     100% {background-position: 0% 50%;}
 }
 
-.floatingformulas {
+.floatingformulas
+{
     position: absolute;
     top: 0px;
     right: 0px;
@@ -33,7 +34,8 @@ body
     z-index: -1;
 }
 
-.floatingformulas cite {
+.floatingformulas cite
+{
     color: #fff;
     position: absolute;
     font-size: 1.5rem;
@@ -58,6 +60,7 @@ a.formula:link, a.formula:visited, a.formula:active
 #title
 {
     font-size: 8rem;
+    text-shadow: 5px 5px 1px #000;
 }
 
 #credits
