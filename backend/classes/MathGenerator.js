@@ -29,8 +29,10 @@ module.exports = class MathGenerator
     `.replaceAll(/\n|\r|\t|\s\s/g, '')
   }
 
-  #renderLimitPrefix(approach, fractionWithin = false)
+  #renderLimitPrefix(approach = '', fractionWithin = false)
   {
+    fractionWithin |= approach.includes('fraction')
+
     return /*html*/ `
       <div class="fraction limit ${fractionWithin ? 'fraction-within' : ''}">
         <span>lim</span>
@@ -85,12 +87,21 @@ module.exports = class MathGenerator
 
   randomEquation(set, forceEqZero = false, x1 = null, x2 = null, alpha = null, xDen1 = 1, xDen2 = 1)
   {
-    let complexity = 2
+    let complexity = 2, isImpossible = false
 
     if (x1 == null)
     {
-      x1 = set[this.randomInt(0, set.length - 1)]
+      do
+        x1 = set[this.randomInt(0, set.length - 1)]
+      while (typeof x1 == 'string' && x1.endsWith('&infin;'))
+
       set.splice(set.indexOf(x1), 1)
+
+      if (isImpossible = x1 == '&empty;')
+      {
+        x1 = this.randomInt(2, 25)
+        x2 = this.randomInt(2, 25)
+      }
     }
 
     if (x2 == null)
@@ -115,7 +126,7 @@ module.exports = class MathGenerator
     else if (this.randomInt(1, 5) <= 3)
     {
       ++complexity
-      a = this.randomInt(-25, 25, r => r == 0 || a == 1)
+      a = this.randomInt(-25, 25, r => r == 0 || r == 1)
 
       if (this.randomInt(1, 3) <= 1)
       {
@@ -190,9 +201,9 @@ module.exports = class MathGenerator
       }
     }
 
-    aBlock = this.#renderBlock(a < 0, aBlock, /*html*/ `x<sup>2</sup>`)
-    bBlock = this.#renderBlock(b < 0, bBlock, 'x')
-    cBlock = this.#renderBlock(c < 0, cBlock, '')
+    aBlock = this.#renderBlock(!isImpossible && a < 0, aBlock, /*html*/ `x<sup>2</sup>`)
+    bBlock = this.#renderBlock(!isImpossible && b < 0, bBlock, 'x')
+    cBlock = this.#renderBlock(!isImpossible && c < 0, cBlock, '')
 
     if (b != 0 && this.randomInt(1, 5) <= 2)
     {
@@ -244,10 +255,8 @@ module.exports = class MathGenerator
 
     return {
       set: set,
-      x1: x1,
-      x2: x2,
-      xDen1: xDen1,
-      xDen2: xDen2,
+      x1: isImpossible ? '&empty;' : x1,
+      x2: isImpossible ? '&empty;' : x2,
       complexity: complexity,
 
       text:
@@ -263,7 +272,11 @@ module.exports = class MathGenerator
     let complexity = 1, limR = set[this.randomInt(0, set.length - 1)], isOne = false, isZero = false
     set.splice(set.indexOf(limR), 1)
 
-    if (limR == 1)
+    if (typeof limR == 'string')
+    {
+      //...
+    }
+    else if (limR == 1)
     {
       isOne = true
       limR = -limR
@@ -281,14 +294,14 @@ module.exports = class MathGenerator
     }
 
     let sign = alpha.num / Math.abs(alpha.num)
-    let multiplier = this.randomInt(-8, 8)
-    let salt = this.randomInt(-8, 8)
     let den = alpha.num * sign
-    let approach = (limR + salt) * alpha.den * sign
-    let xTop, xBottom
+    let multiplier, salt, approach, xTop, xBottom
 
     do
     {
+      multiplier = this.randomInt(-8, 8)
+      salt = this.randomInt(-8, 8, r => r == 0)
+      approach = (limR + salt) * alpha.den * sign
       xTop = isZero ? approach : (limR * multiplier + limR + salt) * alpha.den * sign
       xBottom = (limR + multiplier + salt) * alpha.den * sign
     } while (xTop == xBottom)
@@ -316,10 +329,12 @@ module.exports = class MathGenerator
     const gcd = this.gcd(approach, den)
     let block = approach /= gcd
     den /= gcd
-    complexity += equationTop.complexity + equationBottom.complexity
 
     if (den != 1)
+    {
+      complexity += .5
       block &&= this.#fractionAsCoefficient(approach, den)
+    }
 
     const prefix = this.#renderLimitPrefix(
       this.#finalizeExpression(this.#renderBlock(approach < 0, block, '') || '0'),
@@ -334,12 +349,12 @@ module.exports = class MathGenerator
     return {
       set: set,
       result: (isZero ? 0 : limR) * (isOne ? -1 : 1),
-      complexity: complexity,
+      complexity: complexity + equationTop.complexity + equationBottom.complexity,
       text: prefix + suffix
     }
   }
 
-  randomLimitII()
+  randomLimitII(set)
   {
 
   }
