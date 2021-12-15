@@ -88,6 +88,7 @@ a.formula:link, a.formula:visited, a.formula:active
 #gamedescription
 {
     margin: auto;
+    text-justify: auto;
     width: 80%;
     margin-top: 30px;
     border: 5px solid black;

@@ -1,10 +1,29 @@
 var root = document.documentElement
 root.addEventListener("click", () => root.requestFullscreen())
+document.querySelector("#closepopup").onclick = HidePopup
+
+
+const usernameTriggers =
+{
+    "Quanti grammi?": ["nencio", "dani"],
+    "Hai mangiato le carote oggi ?": ["fanta", "ricca"],
+    "BATTTTTTTTISTINI!!!!": ["bati", "batti"],
+    "ΩLULLI": ["lulli", "omega", "filippo"],
+    "Lanzoide asteroide ☄️": ["lanz", "drive", "guido", "giuido"],
+    "I PIEDDI!": ["fab", "torre"],
+    "🪜": ["erika", "ingenito"],
+    "FRECCE SU TORRE CENTRALE!": ["jack", "mera"],
+    "ER CORSARO NERO!!!": ["cors", "giacomone"],
+    "ENDOJONE.": ["flav", "endo", "ndoj"],
+    "Quante coppe oggi?": ["paci"],
+    "Bella bimba!": ["sarto"],
+}
 
 var originServer = `http://${location.hostname}:${location.port}`
 let maxAnswers = 2
 var isMarkable = true
 var username = ""
+var isGameStarted = false
 
 document.querySelector("#ready").onclick = JoinGame
 
@@ -15,15 +34,20 @@ async function JoinGame()
     if (username.length < 1)
         return
 
-    document.querySelector("#pregame").style.animation = "dragup 1s ease-in-out forwards"
-    document.querySelector("#infoparagraph").style.animation = "dragup 1s ease-in-out forwards"
+    if (isGameStarted)
+    {
+        document.querySelector("#pregame").style.animation = "dragup 1s ease-in-out forwards"
+        document.querySelector("#infoparagraph").style.animation = "dragup 1s ease-in-out forwards"
+    
+        await new Promise(r => setTimeout(r, 1000))
+    
+        document.querySelector("#pregame").remove()
+        document.querySelector("#infoparagraph").remove()
+        PrepareGrid()
+    }
 
-    await new Promise(r => setTimeout(r, 1000))
-
-    document.querySelector("#pregame").remove()
-    document.querySelector("#infoparagraph").remove()
-
-    PrepareGrid()
+    document.querySelector("#ready").innerHTML = 
+    GetMessage(username)
 }
 
 function NewRound()
@@ -118,4 +142,33 @@ async function PrepareGrid()
     await new Promise(r => setTimeout(r, 1000))
 
     document.querySelector("#gamegrid").style.animation = ""
+}
+
+function GetMessage(username)
+{
+    username = username.toLowerCase()
+    for (const message in usernameTriggers)
+    {
+        for (const keyword of usernameTriggers[message])
+        {
+            if (username.includes(keyword))
+            ShowPopup(message)
+        }   
+    }
+    return null
+}
+
+function ShowPopup(message)
+{
+    document.querySelector("#popup").classList.remove("hidden")
+    document.querySelector("#popup").style.animation = "popupslideup 1s ease-in-out forwards"
+    document.querySelector("#popupcontent").textContent = message
+}
+
+async function HidePopup()
+{
+    document.querySelector("#popup").style.animation = "popupslidedown 1s ease-in-out forwards"
+    await new Promise(r => setTimeout(r, 1000))
+    document.querySelector("#popup").classList.add("hidden")
+    document.querySelector("#popup").style.animation = ""
 }
