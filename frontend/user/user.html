@@ -15,15 +15,17 @@
     <p id="infoparagraph">Se riesci a visualizzare questa pagina significa che sei sulla strada giusta. Inserisci il tuo username e premi sul pulsante "Pronto", il regolamento è consultabile sulla lavagna.</p>
 
     <div id="pregame">
-        
         <h3>Inserisci il tuo username</h3>
         <input type="text" placeholder="Username" id="username" maxlength="16" minlength="2">
-        <button type="button" id="ready">Pronto</button>
+        <button type="button" id="ready">Pronto<img style="vertical-align: middle;" class="hidden" id="loader" width="30px" height="30px" src="../common/img/spinner.svg"></img></button>
     </div>
-
     <div id="popup" class="hidden">
         <div id="closepopup">&times;</div>
         <p id="popupcontent">&nbsp;</p>
+    </div>
+
+    <div id="fullscreenbtn">
+        <img src="../common/img/fullscreen.svg" width="20px" height="20px">
     </div>
 
     <div id="gamegrid" class="hidden">

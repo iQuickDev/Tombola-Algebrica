@@ -1,7 +1,7 @@
 var root = document.documentElement
-root.addEventListener("click", () => root.requestFullscreen())
+document.querySelector("#fullscreenbtn").onclick = () => root.requestFullscreen()
+//window.onbeforeunload = () => { if (isGameStarted) return "Sei sicuro di voler uscire?" }
 document.querySelector("#closepopup").onclick = HidePopup
-
 
 const usernameTriggers =
 {
@@ -23,31 +23,38 @@ var originServer = `http://${location.hostname}:${location.port}`
 let maxAnswers = 2
 var isMarkable = true
 var username = ""
-var isGameStarted = false
+var isGameStarted = true
 
 document.querySelector("#ready").onclick = JoinGame
 
 async function JoinGame()
 {
+    let loader = document.querySelector("#loader").cloneNode(true)
+
     username = document.querySelector("#username").value
 
     if (username.length < 1)
         return
 
-    if (isGameStarted)
-    {
-        document.querySelector("#pregame").style.animation = "dragup 1s ease-in-out forwards"
-        document.querySelector("#infoparagraph").style.animation = "dragup 1s ease-in-out forwards"
-    
-        await new Promise(r => setTimeout(r, 1000))
-    
-        document.querySelector("#pregame").remove()
-        document.querySelector("#infoparagraph").remove()
-        PrepareGrid()
-    }
-
-    document.querySelector("#ready").innerHTML = 
+    document.querySelector("#ready").textContent = "In attesa"
+    document.querySelector("#ready").appendChild(loader)
+    document.querySelector("#ready").disabled = true
+    document.querySelector("#loader").classList.remove("hidden")
     GetMessage(username)
+}
+
+async function StartGame()
+{
+    isGameStarted = true
+
+    document.querySelector("#pregame").style.animation = "dragup 1s ease-in-out forwards"
+    document.querySelector("#infoparagraph").style.animation = "dragup 1s ease-in-out forwards"
+
+    await new Promise(r => setTimeout(r, 1000))
+
+    document.querySelector("#pregame").remove()
+    document.querySelector("#infoparagraph").remove()
+    PrepareGrid()
 }
 
 function NewRound()
@@ -78,6 +85,7 @@ async function SendGridToServer()
 {
     let cells = document.querySelectorAll("#gameboard td")
     let gridArray = []
+    let roundAnswers = []
     let firstColumnArray = []
     let secondColumnArray = []
     let thirdColumnArray = []
@@ -108,6 +116,21 @@ async function SendGridToServer()
     }
 
     gridArray.push(firstColumnArray, secondColumnArray, thirdColumnArray)
+    
+    for (let i = 0; i < gridArray.length; i++)
+    {
+        for (let j = 0; j < gridArray[i].length; j++)
+        {
+            if (gridArray[i][j].marked)
+            {
+                roundAnswers.push(gridArray[i][j].value)
+            }
+        }
+    }
+
+    /* send(username, gridArray, roundAnswers) to replace with API call */
+
+    roundAnswers = []
 }
 
 

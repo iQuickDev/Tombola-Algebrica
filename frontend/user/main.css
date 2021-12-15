@@ -216,3 +216,15 @@ p
     from {transform: translateY(0px); opacity: 1;}
     to {transform: translateY(150px); opacity: 0;}
 }
+
+#fullscreenbtn
+{
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    bottom: 15px;
+    left: 15px;
+    background: #0005;
+    padding: 10px;
+    border-radius: 10px;
+}
