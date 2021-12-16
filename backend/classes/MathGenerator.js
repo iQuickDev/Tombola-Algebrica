@@ -268,13 +268,21 @@ module.exports = class MathGenerator
 
   randomLimitZZ(set)
   {
-    const alpha = { num: this.randomInt(-8, 8, r => r == 0 || r == 1), den: 1 }
-    let complexity = 1, limR = set[this.randomInt(0, set.length - 1)], isOne = false, isZero = false
+    const alpha = { num: this.randomInt(-8, 8, r => r == 0), den: 1 }
+    let complexity = 1, limR
+
+    do
+      limR = set[this.randomInt(0, set.length - 1)]
+    while (limR == '&empty;')
+
     set.splice(set.indexOf(limR), 1)
+    let isOne = false, isZero = false, infinitySign = null
 
     if (typeof limR == 'string')
     {
-      //...
+      infinitySign = limR[0]
+      limR = this.randomInt(2, 8)
+      alpha.num = 1
     }
     else if (limR == 1)
     {
@@ -284,10 +292,10 @@ module.exports = class MathGenerator
     else if (limR == 0 && this.randomInt(1, 4) <= 3)
     {
       isZero = true
-      limR = this.randomInt(-8, 8)
+      limR = this.randomInt(-8, 8, r => r == 0 || r == 1)
     }
 
-    if (this.randomInt(1, 5) <= 1)
+    if (infinitySign == null && this.randomInt(1, 5) <= 1)
     {
       ++complexity
       alpha.den = this.randomInt(2, 8, r => r / this.gcd(alpha.num, r) == 1)
@@ -299,11 +307,11 @@ module.exports = class MathGenerator
 
     do
     {
-      multiplier = this.randomInt(-8, 8)
-      salt = this.randomInt(-8, 8, r => r == 0)
+      multiplier = infinitySign == null ? this.randomInt(-8, 8, r => r == 0) : this.randomInt(-8, -1)
+      salt = infinitySign == null ? this.randomInt(-8, 8, r => r == 0) : 0
       approach = (limR + salt) * alpha.den * sign
       xTop = isZero ? approach : (limR * multiplier + limR + salt) * alpha.den * sign
-      xBottom = (limR + multiplier + salt) * alpha.den * sign
+      xBottom = infinitySign == null ? (limR + multiplier + salt) * alpha.den * sign : approach
     } while (xTop == xBottom)
 
     const equationTop = this.randomEquation(
@@ -337,7 +345,13 @@ module.exports = class MathGenerator
     }
 
     const prefix = this.#renderLimitPrefix(
-      this.#finalizeExpression(this.#renderBlock(approach < 0, block, '') || '0'),
+      this.#finalizeExpression(
+        this.#renderBlock(
+          approach < 0,
+          block,
+          infinitySign == null ? '' : /*html*/ `<sup>@</sup>`
+        ) || '0'
+      ).replace('@', infinitySign),
       true
     )
 
@@ -346,9 +360,17 @@ module.exports = class MathGenerator
       equationBottom.text
     ).replaceAll(' = 0', '')
 
+    if (infinitySign == null)
+      limR = (isZero ? 0 : limR) * (isOne ? -1 : 1)
+    else
+    {
+      complexity -= 1
+      limR = infinitySign + '&infin;'
+    }
+
     return {
       set: set,
-      result: (isZero ? 0 : limR) * (isOne ? -1 : 1),
+      result: limR,
       complexity: complexity + equationTop.complexity + equationBottom.complexity,
       text: prefix + suffix
     }
