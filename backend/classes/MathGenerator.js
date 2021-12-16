@@ -1,5 +1,32 @@
 module.exports = class MathGenerator
 {
+  #combinations = [ ]
+  #partials = [ ]
+  #permutations = [ ]
+
+  constructor(kMax = 0, max = 0, lockPermutations = false)
+  {
+    let lastPermutation = 0
+
+    for (let k = 2; k <= kMax; k++)
+    {
+      const kFact = this.fact(k)
+      let lastCombination = 0
+      this.#combinations[k] = [ ]
+      this.#partials[k] = [ ]
+
+      if (!lockPermutations || lastPermutation < max)
+        lastPermutation = this.#permutations[k] = kFact
+
+      for (let n = k + 1; lastCombination < max; n++)
+      {
+        const nFact = this.fact(n)
+        this.#partials[k][n] = Math.floor(nFact / kFact);
+        lastCombination = this.#combinations[k][n] = Math.floor(nFact / fact(n - k) * kFact)
+      }
+    }
+  }
+
   #renderBlock(negative, coef, suffix)
   {
     coef = this.dynamicAbs(coef)
@@ -67,6 +94,16 @@ module.exports = class MathGenerator
     }
 
     return a
+  }
+
+  fact(n)
+  {
+      let r = 1;
+
+      for (var i = 2; i <= n; i++)
+          r *= i;
+
+      return r;
   }
 
   randomBool()
@@ -307,7 +344,9 @@ module.exports = class MathGenerator
 
     do
     {
-      multiplier = infinitySign == null ? this.randomInt(-8, 8, r => r == 0) : this.randomInt(-8, -1)
+      multiplier = infinitySign == null ?
+        this.randomInt(-8, 8, r => r == 0) : this.randomInt(-8, -1)
+
       salt = infinitySign == null ? this.randomInt(-8, 8, r => r == 0) : 0
       approach = (limR + salt) * alpha.den * sign
       xTop = isZero ? approach : (limR * multiplier + limR + salt) * alpha.den * sign
@@ -364,7 +403,7 @@ module.exports = class MathGenerator
       limR = (isZero ? 0 : limR) * (isOne ? -1 : 1)
     else
     {
-      complexity -= 1
+      complexity -= .5
       limR = infinitySign + '&infin;'
     }
 
