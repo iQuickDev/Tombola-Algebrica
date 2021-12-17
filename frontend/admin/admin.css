@@ -578,6 +578,35 @@ th
     transform: translateY(40%);
 }
 
+#addtimecontainer
+{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+#addtime
+{
+    background: #0fff00;
+    border: 2px solid #000;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    font-weight: bold;
+    font-size: 1.3rem;
+    transition: transform .25s
+}
+
+#addtime:hover
+{
+    transform: scale(1.1);
+}
+
+#addtime:active
+{
+    transform: scale(0.9);
+}
+
 #info
 {
     position: absolute;
@@ -638,6 +667,7 @@ th
     display: block;
     overflow-y: auto;
     font-size: 1.5rem;
+    z-index: 9999;
 }
 
 .resultstable > tbody > tr:first-child > td:first-child

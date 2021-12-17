@@ -1,6 +1,4 @@
 var formulas = document.getElementsByTagName("cite")
-var winWidth = window.innerWidth - 200
-var winHeight = window.innerHeight - 200
 var elapsedtime = 0
 var extracted = 0
 var toExtract = 90
@@ -9,6 +7,9 @@ var initialTime = 100
 var isIdle = true
 var participantscount = 0
 var scoresAndPlayers = []
+var isGameStarted = false
+
+game.setTime = (time) => {timeLeft = time}
 
 window.onload = () =>
 {
@@ -24,6 +25,10 @@ window.onload = () =>
 
 document.querySelector("#startgame").addEventListener("click", StartGame)
 document.querySelector("#extractionbox").addEventListener("click", NewExtraction)
+document.querySelector("#addtime").addEventListener("click", () => { timeLeft += 15 })
+//document.querySelector("#localip").innerHTML = /* api call */
+//document.querySelector("#gamelocalip").innerHTML = /* api call */
+document.querySelector("#gamelocalport").innerHTML = location.port
 
 function makeNewPosition()
 {
@@ -47,6 +52,7 @@ async function SimulatePlayerJoin(amount)
     let testPlayer = document.createElement("h4")
     testPlayer.classList.add("player")
     testPlayer.innerHTML = "testPlayer" + i
+
     testPlayer.addEventListener("click", async () =>
     {
       testPlayer.style.animation = "leave .5s forwards"
@@ -62,25 +68,74 @@ async function SimulatePlayerJoin(amount)
       
       await new Promise(r => setTimeout(r, 250))
       testPlayer.remove()
+      OnPlayerLeave(testPlayer.innerHTML)
     })
+
     participantscount++
-
     document.querySelector("#playerscontainer").appendChild(testPlayer)
-
+    OnPlayerJoin(testPlayer.innerHTML)
     document.querySelector("#participantscountwrapper").classList.add("participantsincrement")
-
     document.querySelector("#participantscount").textContent = participantscount
-
     await new Promise(r => setTimeout(r, 250))
-
     document.querySelector("#participantscountwrapper").classList.remove("participantsincrement")
-    
     await new Promise(r => setTimeout(r, 250))
+  }
+}
+
+function OnPlayerJoin(username)
+{
+  if (!isGameStarted)
+  {
+    CheckNewPlayer(username)
+
+    let leaderboard = document.querySelector("#leaderboardplayers")
+    let positions = document.querySelector("#leaderboardpositions")
+    let newPosition = document.createElement("li")
+    newPosition.classList.add("leaderboardposition")
+    let newPlayer = document.createElement("li")
+  
+    switch (positions.children.length)
+    {
+      case 0:
+        newPosition.id = "first"
+        newPosition.textContent = "1°"
+        break
+      case 1:
+        newPosition.id = "second"
+        newPosition.textContent = "2°"
+        break
+      case 2:
+        newPosition.id = "third"
+        newPosition.textContent = "3°"
+        break
+      default:
+        newPosition.textContent = positions.children.length + 1 + "°"
+    }
+    positions.appendChild(newPosition)
+    newPlayer.innerHTML = "<span class='username'>" + username + "</span>" + " <span class='score'>" + 0 + "</span>"
+  
+    leaderboard.appendChild(newPlayer)
+  }
+}
+
+function OnPlayerLeave(username)
+{
+  let leaderboard = document.querySelector("#leaderboardplayers")
+  let positions = document.querySelector("#leaderboardpositions")
+
+  for (let i = 0; i < leaderboard.children.length; i++)
+  {
+    if (leaderboard.children[i].children[0].textContent == username)
+    {
+      positions.lastChild.remove()
+      leaderboard.children[i].remove()
+    }
   }
 }
 
 async function StartGame()
 {
+  isGameStarted = true
   StartTimer()
   document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
   document.querySelector("#game").style.display = "block"
@@ -91,13 +146,30 @@ async function StartGame()
   document.querySelectorAll("cite")[i].style.display = "none"
 }
 
+function UpdateLeaderboard(leaderboardObj)
+{
+  let players = document.querySelector("#leaderboardplayers").children
+
+  for (let i = 0; i < leaderboardObj.length; i++)
+  {
+    players[i].children[0].innerHTML = Object.keys(Object.values(leaderboardObj)[i])[0]
+    players[i].children[1].innerHTML = Object.values(Object.values(leaderboardObj)[i])[0]
+  }
+}
+
 async function SortLeaderboard()
 {
   let leaderboard = document.querySelector("#leaderboardplayers")
+  let players = document.querySelector("#leaderboardplayers").children
 
   document.querySelector("#leaderboard").classList.toggle("leaderboardupdate")
 
   await new Promise(r => setTimeout(r, 1000))
+
+  for (let i = 0; i < players.length; i++)
+  {
+    scoresAndPlayers.push({ username: players[i].children[0].textContent, score: players[i].children[1].textContent })
+  }
 
   scoresAndPlayers.sort((a, b) => b.score - a.score)
 
@@ -105,10 +177,13 @@ async function SortLeaderboard()
     leaderboard.children[i].innerHTML = "<span class='username'>" + scoresAndPlayers[i].username + "</span>" + " <span class='score'>" + scoresAndPlayers[i].score + "</span>"
   }
 
+  scoresAndPlayers = []
+
   await new Promise(r => setTimeout(r, 1000))
 
   document.querySelector("#leaderboard").classList.toggle("leaderboardupdate")
 }
+
 
 function NewExtraction()
 {
@@ -230,84 +305,84 @@ async function EndGame()
     },
     particles: {
       number: {
-        value: 0 // no starting particles
+        value: 0 
       },
       color: {
-        value: ["#1E00FF", "#FF0061", "#E1FF00", "#00FF9E"] // the confetti colors
+        value: ["#1E00FF", "#FF0061", "#E1FF00", "#00FF9E"] 
       },
       shape: {
-        type: "confetti", // the confetti shape
+        type: "confetti", 
         options: {
-          confetti: { // confetti shape options
-            type: ["circle", "square"] // you can only have circle or square for now
+          confetti: {
+            type: ["circle", "square"] 
           }
         }
       },
       opacity: {
-        value: 1, // confetti are solid, so opacity should be 1, but who cares?
+        value: 1, 
         animation: {
-          enable: true, // enables the opacity animation, this will fade away the confettis
-          minimumValue: 0, // minimum opacity reached with animation
-          speed: 2, // the opacity animation speed, the higher the value, the faster the confetti disappear
-          startValue: "max", // start always from opacity 1
-          destroy: "min" // destroy the confettis at opacity 0
+          enable: true, 
+          minimumValue: 0, 
+          speed: 2, 
+          startValue: "max", 
+          destroy: "min" 
         }
       },
       size: {
-        value: 7, // confetti size
+        value: 7,
         random: {
-          enable: true, // enables a random size between 3 (below) and 7 (above)
-          minimumValue: 3 // the confetti minimum size
+          enable: false, 
+          minimumValue: 3 
         }
       },
       life: {
         duration: {
-          sync: true, // syncs the life duration for those who spawns together
-          value: 5 // how many seconds the confettis should be on screen
+          sync: true, 
+          value: 5 
         },
-        count: 1 // how many times the confetti should appear, once is enough this time
+        count: 1 
       },
       move: {
-        enable: true, // confetti need to move right?
+        enable: true, 
         gravity: {
-          enable: true, // gravity to let them fall!
-          acceleration: 20 // how fast the gravity should attract the confettis
+          enable: true, 
+          acceleration: 20 
         },
-        speed: 50, // the confetti speed, it's the starting value since gravity will affect it, and decay too
-        decay: 0.05, // the speed decay over time, it's a decreasing value, every frame the decay will be multiplied by current particle speed and removed from that value
-        outModes: { // what confettis should do offscreen?
-          default: "destroy", // by default remove them
-          top: "none" // but since gravity attract them to bottom, when they go offscreen on top they can stay
+        speed: 50, 
+        decay: 0.05, 
+        outModes: {
+          default: "destroy", 
+          top: "none"
         }
       }
     },
     background: {
-      color: "transparent" // set the canvas background, it will set the style property
+      color: "transparent" 
     },
-    emitters: [ // the confetti emitters, the will bring confetti to life
+    emitters: [ 
       {
-        direction: "top-right", // the first emitter spawns confettis moving in the top right direction
+        direction: "top-right",
         rate: {
-          delay: 0.1, // this is the delay in seconds for every confetti emission (10 confettis will spawn every 0.1 seconds)
-          quantity: 10 // how many confettis must spawn ad every delay
+          delay: 0.1, 
+          quantity: 15 
         },
-        position: { // the emitter position (values are in canvas %)
-          x: 0,
+        position: {
+          x: 10,
           y: 50
         },
-        size: { // the emitter size, if > 0 you'll have a spawn area instead of a point
+        size: { 
           width: 0,
           height: 0
         }
       },
       {
-        direction: "top-left", // same as the first one but in the opposite side
+        direction: "top-left",
         rate: {
           delay: 0.1,
-          quantity: 10
+          quantity: 15
         },
         position: {
-          x: 100,
+          x: 90,
           y: 50
         },
         size: {
@@ -333,4 +408,8 @@ async function EndGame()
   document.querySelector("#endgame").style.display = "block"
   document.querySelector("#endgame").style.animation = ""
   document.querySelector("#endgame").classList.add("growappear")
+
+  await new Promise(r => setTimeout(r, 10000))
+
+  confettiDiv.remove()
 }
