@@ -17,6 +17,8 @@ const usernameTriggers =
     "ENDOJONE.": ["flav", "endo", "ndoj"],
     "Quante coppe oggi?": ["paci"],
     "Bella bimba!": ["sarto"],
+    "Mar🖱️🖥️ 🎿🏔️🏔️": ["mar", "scialpi"],
+    "⬇️SENATORE<br>⬆️SENATORE<br>➡️SENATORE<br>⬅️SENATORE<br>🎯SENATORE": ["sena", "gius", "guis"]
 }
 
 var originServer = `http://${location.hostname}:${location.port}`
@@ -185,7 +187,7 @@ function ShowPopup(message)
 {
     document.querySelector("#popup").classList.remove("hidden")
     document.querySelector("#popup").style.animation = "popupslideup 1s ease-in-out forwards"
-    document.querySelector("#popupcontent").textContent = message
+    document.querySelector("#popupcontent").innerHTML = message
 }
 
 async function HidePopup()

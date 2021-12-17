@@ -33,7 +33,7 @@
         <section id="content">
             <div id="pregame">
                 <h1 id="title">Tombola Algebrica</h1>
-                <h4 id="credits">(creata da Lotti & Di Carlo)</h4>
+                <h4 id="credits">Creata da Lotti (backend), Di Carlo (frontend) e Meratti (musica)</h4>
                 <h3>Utilizza questo link per entrare nel gioco</h3>
                 <div id="gameinfo">
                     <h2 id="localip">[LOCAL IP]:[PORT]</h2>
@@ -80,9 +80,9 @@
                     visualizzabile in basso a destra,
                     per trovare i risultati sarà necessario risolvere i quesiti su un foglio di carta prima che il tempo
                     scada,
-                    una volta trovato il risultato bisognerà controllare la propria scheda e vedere se il numero
-                    calcolato è presente o meno,
-                    in caso lo sia si dovrà premere sul numero stesso per segnarlo come "estratto", altrimenti basterà
+                    una volta trovati i risultati bisognerà controllare la propria scheda e vedere se i numeri
+                    calcolati sono presenti o meno,
+                    in caso lo siano si dovrà premere sui numeri stessi per segnarli come "estratti", altrimenti basterà
                     continuare a giocare.
                     <h2 style="margin-top: 20px; margin-bottom: 20px;">AMBO, TERNA, QUATERNA, CINQUINA E TOMBOLA</h2>
                     Nel caso un giocatore faccia ambo, terna, quaterna, cinquina o addirittura tombola il sistema lo
@@ -178,6 +178,11 @@
                         </div>
                     </div>
                     <img id="hand" src="../common/img/hand.png">
+
+                    <div class="screenelement" id="notification">
+                        <h2 id="notificationcontent"></h2>
+                    </div>
+
                     <div class="screenelement" id="extractionbox">
                         <img src="../common/img/extractionbox.png" width="300">
                     </div>

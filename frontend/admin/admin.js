@@ -8,6 +8,7 @@ var isIdle = true
 var participantscount = 0
 var scoresAndPlayers = []
 var isGameStarted = false
+var song = new Audio("../common/audio/song.wav")
 
 game.setTime = (time) => {timeLeft = time}
 
@@ -25,6 +26,7 @@ window.onload = () =>
 
 document.querySelector("#startgame").addEventListener("click", StartGame)
 document.querySelector("#extractionbox").addEventListener("click", NewExtraction)
+document.body.addEventListener("click", () => {song.play()}, {once: true})
 document.querySelector("#addtime").addEventListener("click", () => { timeLeft += 15 })
 //document.querySelector("#localip").innerHTML = /* api call */
 //document.querySelector("#gamelocalip").innerHTML = /* api call */
@@ -135,6 +137,7 @@ function OnPlayerLeave(username)
 
 async function StartGame()
 {
+  /* todo: api call to get question */
   isGameStarted = true
   StartTimer()
   document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
@@ -142,8 +145,17 @@ async function StartGame()
   document.querySelector("#game").style.animation = "showgamepanel 1s linear"
   await new Promise(r => setTimeout(r, 1000))
   document.querySelector("#pregame").style.display = "none"
-  for (let i = 0; i < document.querySelectorAll("cite").length; i++)
-  document.querySelectorAll("cite")[i].style.display = "none"
+
+  document.querySelector("#formula1").remove()
+  document.querySelector("#formula2").remove()
+  document.querySelector("#formula3").remove()
+  document.querySelector("#formula4").remove()
+  document.querySelector("#formula5").remove()
+  document.querySelector("#formula6").remove()
+  document.querySelector("#formula7").remove()
+  document.querySelector("#formula8").remove()
+
+  song.pause()
 }
 
 function UpdateLeaderboard(leaderboardObj)
@@ -152,8 +164,8 @@ function UpdateLeaderboard(leaderboardObj)
 
   for (let i = 0; i < leaderboardObj.length; i++)
   {
-    players[i].children[0].innerHTML = Object.keys(Object.values(leaderboardObj)[i])[0]
-    players[i].children[1].innerHTML = Object.values(Object.values(leaderboardObj)[i])[0]
+    players[i].children[0].innerHTML = Object.keys(Object.values(leaderboardObj["scores"])[i])[0]
+    players[i].children[1].innerHTML = Object.values(Object.values(leaderboardObj["scores"])[i])[0]
   }
 }
 
@@ -187,6 +199,8 @@ async function SortLeaderboard()
 
 function NewExtraction()
 {
+  /* todo: api call to get question */
+
   document.querySelector("#questioncontainer").style.display = "block"
   document.querySelector("#extractionbox").style.pointerEvents = "none"
   if (document.querySelector("#questioncontainer").classList.contains("removeextractednumberanim"))
@@ -240,9 +254,7 @@ var timerPieElement = new EasyPieChart(timerPie,
 
 function GetTimePercentage()
 {
-  let percentage = (timeLeft / initialTime) * 100
-
-  return percentage
+  return (timeLeft / initialTime) * 100
 }
 
 
@@ -268,12 +280,41 @@ function StartTimer()
   }, 1000)
 }
 
-async function EndGame()
+async function ConfettiRain(delay)
 {
   let confettiDiv = document.createElement("div")
   confettiDiv.id = "confetti"
   document.body.insertBefore(confettiDiv, document.body.firstChild)
 
+  LoadConfetti()
+
+  await new Promise(r => setTimeout(r, delay - 1000))
+
+  confettiDiv.style.animation = "confettifadeout 1s linear forwards"
+
+  await new Promise(r => setTimeout(r, 1000))
+
+  confettiDiv.remove()
+}
+
+async function ShowNotification(message)
+{
+  if (message != null)
+  {
+    document.querySelector("#notification").style.display = "block"
+    document.querySelector("#notificationcontent").innerHTML = message
+    document.querySelector("#notification").style.animation = "shownotification 1s linear forwards"
+    ConfettiRain(4000)
+    await new Promise(r => setTimeout(r, 3000))
+    document.querySelector("#notification").style.animation = "hidenotification 1s linear forwards"
+    await new Promise(r => setTimeout(r, 1000))
+    document.querySelector("#notification").style.animation = ""
+    document.querySelector("#notification").style.display = "none"
+  }
+}
+
+async function EndGame()
+{
   document.querySelector("#screen").style.overflow = "hidden"
 
   document.querySelector("#screen").classList.remove("widescreen")
@@ -299,6 +340,27 @@ async function EndGame()
   document.querySelector("#screen").classList.remove("widescreen")
   document.querySelector("#screen").style.width = "80%"
 
+  ConfettiRain(10000)
+
+  document.querySelector("#preendgame").style.display = "block"
+  document.querySelector("#preendgame").style.animation = ""
+  document.querySelector("#winnermessage").style.animation = "winnermessageanim .5s linear infinite"
+
+  await new Promise(r => setTimeout(r, 5000))
+
+  document.querySelector("#winnermessage").style.animation = "winnermessagenormal .5s linear forwards"
+
+  await new Promise(r => setTimeout(r, 500))
+
+  document.querySelector("#winnermessage").style.animation = ""
+  document.querySelector("#preendgame").style.marginTop = "0px"
+  document.querySelector("#endgame").style.display = "block"
+  document.querySelector("#endgame").style.animation = ""
+  document.querySelector("#endgame").classList.add("growappear")
+}
+
+function LoadConfetti()
+{
   tsParticles.load("confetti", {
     fullScreen: {
       enable: false
@@ -367,7 +429,7 @@ async function EndGame()
           quantity: 15 
         },
         position: {
-          x: 10,
+          x: 0,
           y: 50
         },
         size: { 
@@ -382,7 +444,7 @@ async function EndGame()
           quantity: 15
         },
         position: {
-          x: 90,
+          x: 100,
           y: 50
         },
         size: {
@@ -392,24 +454,4 @@ async function EndGame()
       }
     ]
   })
-
-  document.querySelector("#preendgame").style.display = "block"
-  document.querySelector("#preendgame").style.animation = ""
-  document.querySelector("#winnermessage").style.animation = "winnermessageanim .5s linear infinite"
-
-  await new Promise(r => setTimeout(r, 5000))
-
-  document.querySelector("#winnermessage").style.animation = "winnermessagenormal .5s linear forwards"
-
-  await new Promise(r => setTimeout(r, 500))
-
-  document.querySelector("#winnermessage").style.animation = ""
-  document.querySelector("#preendgame").style.marginTop = "0px"
-  document.querySelector("#endgame").style.display = "block"
-  document.querySelector("#endgame").style.animation = ""
-  document.querySelector("#endgame").classList.add("growappear")
-
-  await new Promise(r => setTimeout(r, 10000))
-
-  confettiDiv.remove()
 }
