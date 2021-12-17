@@ -3,27 +3,41 @@ module.exports = class MathGenerator
   #combinations = [ ]
   #partials = [ ]
   #permutations = [ ]
+  #combinatoricSets
 
-  constructor(kMax = 0, max = 0, lockPermutations = false)
+  constructor(kMax = 0, max = 0, lockPermutations = false, parallel = false)
   {
     let lastPermutation = 0
 
     for (let k = 2; k <= kMax; k++)
     {
       const kFact = this.fact(k)
-      let lastCombination = 0
+      let lastPartial = 0, lastCombination = 0
       this.#combinations[k] = [ ]
       this.#partials[k] = [ ]
 
       if (!lockPermutations || lastPermutation < max)
         lastPermutation = this.#permutations[k] = kFact
 
-      for (let n = k + 1; lastCombination < max; n++)
+      for (let n = k + 1; lastPartial < max || lastCombination < max; n++)
       {
         const nFact = this.fact(n)
-        this.#partials[k][n] = Math.floor(nFact / kFact);
-        lastCombination = this.#combinations[k][n] = Math.floor(nFact / fact(n - k) * kFact)
+
+        if (parallel || lastPartial < max)
+          lastPartial = this.#partials[k][n] = Math.floor(nFact / kFact);
+
+        if (parallel || lastCombination < max)
+          lastCombination =
+            this.#combinations[k][n] =
+              Math.floor(nFact / (this.fact(n - k) * kFact))
       }
+    }
+
+    this.#combinatoricSets =
+    {
+      'C': this.#combinations,
+      'D': this.#partials,
+      'P': this.#permutations
     }
   }
 
@@ -66,6 +80,12 @@ module.exports = class MathGenerator
         <span>x &xrarr; ${approach}</span>
       </div>
     `.replaceAll(/\n|\r|\t|\s\s/g, '')
+  }
+
+  #randomCobinatoricSetKey()
+  {
+    let keys = Object.keys(this.#combinatoricSets)
+    return keys[this.randomInt(0, keys.length - 1)]
   }
 
   dynamicAbs(obj)
@@ -418,5 +438,85 @@ module.exports = class MathGenerator
   randomLimitII(set)
   {
 
+  }
+
+  randomCombinatoricExpression(set)
+  {
+    let value, k = null, n = null, adding = 0, setKey = this.#randomCobinatoricSetKey()
+
+    do
+      value = set[this.randomInt(0, set.length - 1)]
+    while (typeof value == 'string' && value.endsWith('&infin;'))
+
+    set.splice(set.indexOf(value), 1)
+
+    if (value == '&empty;')
+    {
+      if (setKey == 'P')
+        k = this.randomInt(-9, -1)
+      else if (this.randomBool())
+      {
+        k = this.randomInt(2, 10)
+        n = this.randomInt(k + 1, k + 9)
+      }
+      else
+      {
+        k = this.randomInt(-9, -1)
+        n = this.randomInt(2, 10) * (this.randomBool() ? -1 : 1)
+
+        if (this.randomBool())
+        {
+          let t = n
+          n = k
+          k = t
+        }
+      }
+    }
+    else if (setKey == 'P')
+    {
+      for (let i = 2; i < this.#combinatoricSets[setKey].length; i++)
+      {
+        if (this.#combinatoricSets[setKey][i] == value)
+        {
+          k = i
+          break
+        }
+      }
+
+      if (k == null)
+      {
+        k = this.randomInt(2, this.#combinatoricSets[setKey].length - 1)
+        adding = value - this.#combinatoricSets[setKey][k]
+      }
+    }
+    else
+    {
+      k = this.randomInt(2, this.#combinatoricSets[setKey].length - 1)
+
+      for (let i = k + 1; i < this.#combinatoricSets[setKey][k].length; i++)
+      {
+        if (this.#combinatoricSets[setKey][k][i] == value)
+        {
+          n = i
+          break
+        }
+      }
+
+      if (n == null)
+      {
+        n = this.randomInt(k + 1, this.#combinatoricSets[setKey][k].length - 1)
+        adding = value - this.#combinatoricSets[setKey][k][n]
+      }
+    }
+
+    return {
+      set: set,
+      result: value,
+      complexity: 1,
+
+      text:
+        /*html*/ `${setKey}<sub>${setKey == 'P' ? '' : n + ','}${k}` +
+        this.#finalizeExpression(/*html*/ `</sub>${this.#renderBlock(adding < 0, adding, '')}`)
+    }
   }
 }
