@@ -12,6 +12,17 @@ var song = new Audio("../common/audio/song.wav")
 
 game.setTime = (time) => {timeLeft = time}
 
+var timerPieElement = new EasyPieChart(document.querySelector(".timechart"),
+{
+  barColor: '#8d00ff',
+  trackColor: "#00000050",
+  scaleLength: 0,
+  lineCap: "round",
+  lineWidth: 10,
+  size: 175,
+  rotate: 0
+})
+
 window.onload = () =>
 {
   animateElement("#formula1")
@@ -238,19 +249,6 @@ async function ClearExtraction()
     EndGame()
   }
 }
-
-var timerPie = document.querySelector(".timechart")
-
-var timerPieElement = new EasyPieChart(timerPie,
-{
-  barColor: '#8d00ff',
-  trackColor: "#00000050",
-  scaleLength: 0,
-  lineCap: "round",
-  lineWidth: 10,
-  size: 175,
-  rotate: 0
-})
 
 function GetTimePercentage()
 {
