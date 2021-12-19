@@ -8,7 +8,8 @@ var isIdle = true
 var participantscount = 0
 var scoresAndPlayers = []
 var isGameStarted = false
-var song = new Audio("../common/audio/song.wav")
+var song = new Audio("../common/audio/song.mp3")
+var solutions = []
 
 game.setTime = (time) => {timeLeft = time}
 
@@ -36,8 +37,9 @@ window.onload = () =>
 }
 
 document.querySelector("#startgame").addEventListener("click", StartGame)
+document.querySelector("#stopgame").onclick = () => EndGame("NESSUNO")
 document.querySelector("#extractionbox").addEventListener("click", NewExtraction)
-document.body.addEventListener("click", () => {song.play()}, {once: true})
+document.querySelector("#showsolutions").onclick = () => ShowSolutions()
 document.querySelector("#addtime").addEventListener("click", () => { timeLeft += 15 })
 //document.querySelector("#localip").innerHTML = /* api call */
 //document.querySelector("#gamelocalip").innerHTML = /* api call */
@@ -149,6 +151,7 @@ function OnPlayerLeave(username)
 async function StartGame()
 {
   /* todo: api call to get question */
+  /* todo: api call solutions.push({text: "", result: []}) */
   isGameStarted = true
   StartTimer()
   document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
@@ -165,8 +168,6 @@ async function StartGame()
   document.querySelector("#formula6").remove()
   document.querySelector("#formula7").remove()
   document.querySelector("#formula8").remove()
-
-  song.pause()
 }
 
 function UpdateLeaderboard(leaderboardObj)
@@ -211,7 +212,8 @@ async function SortLeaderboard()
 function NewExtraction()
 {
   /* todo: api call to get question */
-
+  song.currentTime = 0
+  song.play()
   document.querySelector("#questioncontainer").style.display = "block"
   document.querySelector("#extractionbox").style.pointerEvents = "none"
   if (document.querySelector("#questioncontainer").classList.contains("removeextractednumberanim"))
@@ -232,6 +234,7 @@ function NewExtraction()
 
 async function ClearExtraction()
 {
+  song.pause()
   document.querySelector("#extractionbox").style.pointerEvents = "all"
   document.querySelector("#hand").classList.toggle("handsanim")
 
@@ -311,8 +314,46 @@ async function ShowNotification(message)
   }
 }
 
-async function EndGame()
+function ShowSolutions()
 {
+  document.querySelector("#solutionscontainer").style.animation = "expandsolutions 10s ease-in-out forwards"
+}
+
+function FillSolutionsScreen(solutions)
+{
+  for (let i = 0; i < solutions.length; i++)
+  {
+    let solutionContainer = document.createElement("div")
+    solutionContainer.id = "solution-" + i
+    solutionContainer.classList.add("solution")
+    solutionContainer.innerHTML = /*html*/
+    `
+      <div class="expression">
+        <h3>Espressione ${i}</h3>
+        ${solutions[i].text}
+      </div>
+
+      <div class="expressionanswer">
+        <h3>Soluzioni</h3>
+        <h2>${solutions[i].result.toString().replace(",", ", ")}</h2>
+      </div>
+    `
+
+    document.querySelector("#solutionscontainer").appendChild(solutionContainer)
+  }
+}
+
+
+async function EndGame(winnerName)
+{
+  song.pause()
+
+  FillSolutionsScreen(solutions)
+
+  document.querySelector("#winner").innerHTML = winnerName
+
+  document.querySelector("#stopgame").style.animation = "shrinkdisappear 1s linear forwards"
+
   document.querySelector("#screen").style.overflow = "hidden"
 
   document.querySelector("#screen").classList.remove("widescreen")
@@ -327,6 +368,8 @@ async function EndGame()
 
   for (let i = 0; i < document.querySelector("#screen").children.length; i++)
   document.querySelector("#screen").children[i].style.display = "none"
+
+  document.querySelector("#stopgame").style.display = "none"
 
   document.querySelector("#screen").classList.add("widescreen")
 
@@ -355,6 +398,8 @@ async function EndGame()
   document.querySelector("#endgame").style.display = "block"
   document.querySelector("#endgame").style.animation = ""
   document.querySelector("#endgame").classList.add("growappear")
+
+  document.querySelector("#screen").style.overflowY = "auto"
 }
 
 function LoadConfetti()

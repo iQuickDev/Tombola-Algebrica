@@ -26,6 +26,7 @@ let maxAnswers = 2
 var isMarkable = true
 var username = ""
 var isGameStarted = true
+var gridObj = []
 
 document.querySelector("#ready").onclick = JoinGame
 
@@ -47,6 +48,7 @@ async function JoinGame()
 
 async function StartGame()
 {
+    /* gridObj = api call */
     isGameStarted = true
 
     document.querySelector("#pregame").style.animation = "dragup 1s ease-in-out forwards"
@@ -56,7 +58,7 @@ async function StartGame()
 
     document.querySelector("#pregame").remove()
     document.querySelector("#infoparagraph").remove()
-    PrepareGrid()
+    PrepareGrid(gridObj)
 }
 
 function NewRound()
@@ -136,13 +138,21 @@ async function SendGridToServer()
 }
 
 
-async function PrepareGrid()
+async function PrepareGrid(gridObj)
 {
     document.querySelector("#gridusername").textContent = username
 
     let cells = document.querySelectorAll("#gameboard td")
 
-    cells.forEach(e => e.textContent = e.id)
+    for (let i = 0; i < cells.length; i++)
+    {
+        if (parseInt(cells[i].id.replace("cell-", "")) < 9)
+            cells[i].innerHTML = gridObj[0][parseInt(cells[i].id.replace("cell-", ""))]
+        else if (parseInt(cells[i].id.replace("cell-", "")) < 18)
+            cells[i].innerHTML = gridObj[1][parseInt(cells[i].id.replace("cell-", "")) - 9]
+        else
+            cells[i].innerHTML = gridObj[2][parseInt(cells[i].id.replace("cell-", "")) - 18]
+    }
 
     for (let i = 0; i < cells.length; i++)
     {

@@ -784,3 +784,110 @@ th
         opacity: 0;
     }
 }
+
+#stopgame
+{
+    position: absolute;
+    top: 440px;
+    right: 50px;
+    width: 280px;
+    height: 50px;
+    background: #ff0053;
+    border-radius: 10px;
+    border: 3px solid #000;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: transform .20s;
+}
+
+#stopgame:hover
+{
+    animation: blink .75s linear infinite;
+}
+
+#stopgame:active
+{
+    transform: scale(.9);
+    animation: none;
+    background: #f00;
+}
+
+@keyframes blink
+{  
+    0% {background: #ff0053}
+    50% {background: #FFF}
+    100% {background: #ff0053}
+}
+
+#solutions
+{
+    color: #000;
+}
+
+#solutionscontainer
+{
+    background: #FFF;
+    width: 50%;
+    margin: auto;
+    max-height: 0px;
+    overflow: hidden;
+}
+
+@keyframes expandsolutions
+{
+    from {max-height: 0px}
+    to {max-height: 10000px}
+}
+
+#showsolutions
+{
+    margin: auto;
+    margin-top: 20px;
+    padding: 5px;
+    width: 50%;
+    background-color: #fff;
+    border: 3px solid #000;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.solution
+{
+    border: 1px solid #000;
+}
+
+#solutions .fraction > hr
+{
+    border: 1px solid #000;
+    box-shadow: none;
+}
+
+#solutions .fraction.limit > :last-child
+{
+    font-size: .8rem;
+    margin-top: -.5rem;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #000;
+    border-left: none;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #8000FF;
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #5901fe;
+}
