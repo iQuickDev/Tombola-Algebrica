@@ -43,7 +43,6 @@ document.querySelector("#showsolutions").onclick = () => ShowSolutions()
 document.querySelector("#addtime").addEventListener("click", () => { timeLeft += 15 })
 //document.querySelector("#localip").innerHTML = /* api call */
 //document.querySelector("#gamelocalip").innerHTML = /* api call */
-document.querySelector("#gamelocalport").innerHTML = location.port
 
 function makeNewPosition()
 {
@@ -173,12 +172,18 @@ async function StartGame()
 function UpdateLeaderboard(leaderboardObj)
 {
   let players = document.querySelector("#leaderboardplayers").children
+  let index = 0
 
-  for (let i = 0; i < leaderboardObj.length; i++)
+  for (const user in leaderboardObj)
   {
-    players[i].children[0].innerHTML = Object.keys(Object.values(leaderboardObj["scores"])[i])[0]
-    players[i].children[1].innerHTML = Object.values(Object.values(leaderboardObj["scores"])[i])[0]
+    players[index].innerHTML = /*html*/
+    `
+    <span class="username">${user}</span>
+    <span class="score">${leaderboardObj[user]}</span>
+    `
+    index++
   }
+
 }
 
 async function SortLeaderboard()
@@ -343,6 +348,23 @@ function FillSolutionsScreen(solutions)
   }
 }
 
+function FillEndGameTable(scores)
+{
+  let playerRows = document.querySelector("#resultstable").children[1]
+  for (let i = 0; i < Object.keys(scores.fake).length; i++)
+  {
+    let playerRow = document.createElement("tr")
+    playerRow.innerHTML = /*html*/
+    `
+    <td>${i + 1}°</td>
+    <td>${Object.keys(scores.fake)[i]}</td>
+    <td>${Object.values(scores.fake)[i]}</td>
+    <td>${Object.values(scores.fake)[i] - Object.values(scores.real)[i]}</td>
+    <td>${Object.values(scores.real)[i]}</td>
+    `
+    playerRows.appendChild(playerRow)
+  }
+}
 
 async function EndGame(winnerName)
 {
