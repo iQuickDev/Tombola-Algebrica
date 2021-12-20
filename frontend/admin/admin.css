@@ -4,6 +4,7 @@
 *
 {
     font-family: 'Open Sans', sans-serif;
+    scroll-behavior: smooth;
 }
 
 body
@@ -274,8 +275,8 @@ th
     background: #ffffff80;
     padding: 0;
     margin: 0;
-    overflow-y: hidden;
-    max-height: 1500px;
+    overflow-y: auto;
+    max-height: 900px;
     transition: max-height 1s linear;
 }
 
@@ -584,6 +585,7 @@ th
     position: absolute;
     bottom: 20px;
     right: 20px;
+    display: none;
 }
 
 #addtime
@@ -664,7 +666,7 @@ th
     margin: auto;
     margin-top: 40px;
     width: max-content;
-    max-height: 800px;
+    max-height: 650px;
     display: block;
     overflow-y: auto;
     font-size: 1.5rem;
@@ -850,6 +852,13 @@ th
     border-radius: 10px;
     font-weight: bold;
     font-size: 1.2rem;
+    transform: scale(0);
+}
+
+@keyframes growtodefault
+{
+    from {transform: scale(0)}
+    to {transform: scale(1)}
 }
 
 .solution

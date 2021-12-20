@@ -348,9 +348,27 @@ function FillSolutionsScreen(solutions)
   }
 }
 
+let scoresObj =
+{
+  fake:
+  {
+    "yang": 15,
+    "diego": 10,
+    "zang": 8
+  },
+  real:
+  {
+    "yang": 5,
+    "diego": 10,
+    "zang": 3
+  }
+}
+
 function FillEndGameTable(scores)
 {
   let playerRows = document.querySelector("#resultstable").children[1]
+  let scoresToSort = []
+
   for (let i = 0; i < Object.keys(scores.fake).length; i++)
   {
     let playerRow = document.createElement("tr")
@@ -359,10 +377,32 @@ function FillEndGameTable(scores)
     <td>${i + 1}°</td>
     <td>${Object.keys(scores.fake)[i]}</td>
     <td>${Object.values(scores.fake)[i]}</td>
-    <td>${Object.values(scores.fake)[i] - Object.values(scores.real)[i]}</td>
+    <td>${Object.values(scores.real)[i] - Object.values(scores.fake)[i]}</td>
     <td>${Object.values(scores.real)[i]}</td>
     `
     playerRows.appendChild(playerRow)
+  }
+
+  let newPlayerRows = document.querySelector("#resultstable").children[1].children
+
+  for (let i = 0; i < newPlayerRows.length; i++)
+  {
+    scoresToSort.push({
+      username: newPlayerRows[i].children[1].textContent,
+      fake: newPlayerRows[i].children[2].textContent,
+      errors: newPlayerRows[i].children[3].textContent,
+      real: newPlayerRows[i].children[4].textContent
+    })
+  }
+
+  scoresToSort.sort((a, b) => b.real - a.real)
+
+  for (let i = 0; i < scoresToSort.length; i++)
+  {
+    newPlayerRows[i].children[1].innerHTML = scoresToSort[i].username
+    newPlayerRows[i].children[2].innerHTML = scoresToSort[i].fake
+    newPlayerRows[i].children[3].innerHTML = scoresToSort[i].errors
+    newPlayerRows[i].children[4].innerHTML = scoresToSort[i].real
   }
 }
 
@@ -370,6 +410,7 @@ async function EndGame(winnerName)
 {
   song.pause()
 
+  //FillEndGameTable(scores) api call
   FillSolutionsScreen(solutions)
 
   document.querySelector("#winner").innerHTML = winnerName
@@ -422,6 +463,10 @@ async function EndGame(winnerName)
   document.querySelector("#endgame").classList.add("growappear")
 
   document.querySelector("#screen").style.overflowY = "auto"
+
+  await new Promise(r => setTimeout(r, 1000))
+
+  document.querySelector("#showsolutions").style.animation = "growtodefault .5s linear forwards"
 }
 
 function LoadConfetti()
