@@ -3,11 +3,6 @@ module.exports = class Wrapper
   #value
   #changed = null
 
-  constructor(v)
-  {
-    this.value = v
-  }
-
   get value()
   {
     return this.#value
@@ -22,5 +17,10 @@ module.exports = class Wrapper
   set changed(v)
   {
     this.#changed = v
+  }
+
+  constructor(v)
+  {
+    this.value = v
   }
 }
