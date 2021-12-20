@@ -9,7 +9,7 @@ module.exports = class MathGenerator
   {
     let lastPermutation = 0
 
-    for (let k = 2; k <= kMax; k++)
+    for (let k = 2; k <= kMax; ++k)
     {
       const kFact = this.fact(k)
       let lastPartial = 0, lastCombination = 0
@@ -19,17 +19,17 @@ module.exports = class MathGenerator
       if (!lockPermutations || lastPermutation < max)
         lastPermutation = this.#permutations[k] = kFact
 
-      for (let n = k + 1; lastPartial < max || lastCombination < max; n++)
+      for (let n = k + 1; lastPartial < max || lastCombination < max; ++n)
       {
         const nFact = this.fact(n)
 
         if (parallel || lastPartial < max)
-          lastPartial = this.#partials[k][n] = Math.floor(nFact / kFact);
+          lastPartial = this.#partials[k][n] = Math.round(nFact / kFact);
 
         if (parallel || lastCombination < max)
           lastCombination =
             this.#combinations[k][n] =
-              Math.floor(nFact / (this.fact(n - k) * kFact))
+              Math.round(nFact / (this.fact(n - k) * kFact))
       }
     }
 
@@ -118,17 +118,17 @@ module.exports = class MathGenerator
 
   fact(n)
   {
-      let r = 1;
+    let r = 1;
 
-      for (var i = 2; i <= n; i++)
-          r *= i;
+    for (var i = 2; i <= n; ++i)
+      r *= i;
 
-      return r;
+    return r;
   }
 
   randomBool()
   {
-    return Math.floor(Math.random()) == 1
+    return Math.random() < 0.5
   }
 
   randomInt(min, max, exclusionPredicate = () => false)
@@ -148,9 +148,13 @@ module.exports = class MathGenerator
 
     if (x1 == null)
     {
-      do
-        x1 = set[this.randomInt(0, set.length - 1)]
-      while (typeof x1 == 'string' && x1.endsWith('&infin;'))
+      x1 = set[
+        this.randomInt(
+          0,
+          set.length - 1,
+          r => typeof set[r] == 'string' && set[r].endsWith('&infin;')
+        )
+      ]
 
       set.splice(set.indexOf(x1), 1)
 
@@ -169,7 +173,7 @@ module.exports = class MathGenerator
       {
         x2 = set[this.randomInt(0, set.length - 1)]
         set.splice(set.indexOf(x2), 1)
-        complexity++
+        ++complexity
       }
     }
 
@@ -295,7 +299,7 @@ module.exports = class MathGenerator
       bBlock = ''
     }
 
-    let leftOfEq, rightOfEq
+    let leftOfEq, rightOfEq, result
 
     if (cRight)
     {
@@ -310,10 +314,15 @@ module.exports = class MathGenerator
 
     console.log(`[${a}/${aDen}](x - ${x1}/${xDen1})(x - ${x2}/${xDen2})`)
 
+    if (isImpossible)
+      result = [ '&empty;' ]
+    else if (x1 == x2)
+      result = [ x1 ]
+    else
+      result = [ x1, x2 ]
+
     return {
-      set: set,
-      x1: isImpossible ? '&empty;' : x1,
-      x2: isImpossible ? '&empty;' : x2,
+      result: result,
       complexity: complexity,
 
       text:
@@ -326,14 +335,9 @@ module.exports = class MathGenerator
   randomLimitZZ(set)
   {
     const alpha = { num: this.randomInt(-8, 8, r => r == 0), den: 1 }
-    let complexity = 1, limR
-
-    do
-      limR = set[this.randomInt(0, set.length - 1)]
-    while (limR == '&empty;')
-
+    let complexity = 2, isOne = false, isZero = false, infinitySign = null
+    let limR = set[this.randomInt(0, set.length - 1, r => set[r] == '&empty;')]
     set.splice(set.indexOf(limR), 1)
-    let isOne = false, isZero = false, infinitySign = null
 
     if (typeof limR == 'string')
     {
@@ -428,8 +432,7 @@ module.exports = class MathGenerator
     }
 
     return {
-      set: set,
-      result: limR,
+      result: [ limR ],
       complexity: complexity + equationTop.complexity + equationBottom.complexity,
       text: prefix + suffix
     }
@@ -442,11 +445,15 @@ module.exports = class MathGenerator
 
   randomCombinatoricExpression(set)
   {
-    let value, k = null, n = null, adding = 0, setKey = this.#randomCobinatoricSetKey()
+    let k = null, n = null, adding = 0, setKey = this.#randomCobinatoricSetKey()
 
-    do
-      value = set[this.randomInt(0, set.length - 1)]
-    while (typeof value == 'string' && value.endsWith('&infin;'))
+    let value = set[
+      this.randomInt(
+        0,
+        set.length - 1,
+        r => typeof set[r] == 'string' && set[r].endsWith('&infin;')
+      )
+    ]
 
     set.splice(set.indexOf(value), 1)
 
@@ -474,7 +481,7 @@ module.exports = class MathGenerator
     }
     else if (setKey == 'P')
     {
-      for (let i = 2; i < this.#combinatoricSets[setKey].length; i++)
+      for (let i = 2; i < this.#combinatoricSets[setKey].length; ++i)
       {
         if (this.#combinatoricSets[setKey][i] == value)
         {
@@ -493,7 +500,7 @@ module.exports = class MathGenerator
     {
       k = this.randomInt(2, this.#combinatoricSets[setKey].length - 1)
 
-      for (let i = k + 1; i < this.#combinatoricSets[setKey][k].length; i++)
+      for (let i = k + 1; i < this.#combinatoricSets[setKey][k].length; ++i)
       {
         if (this.#combinatoricSets[setKey][k][i] == value)
         {
@@ -510,8 +517,7 @@ module.exports = class MathGenerator
     }
 
     return {
-      set: set,
-      result: value,
+      result: [ value ],
       complexity: 1,
 
       text:
