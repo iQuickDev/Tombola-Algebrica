@@ -1,6 +1,6 @@
 var root = document.documentElement
 document.querySelector("#fullscreenbtn").onclick = () => root.requestFullscreen()
-//window.onbeforeunload = () => { if (isGameStarted) return "Sei sicuro di voler uscire?" }
+window.onbeforeunload = () => { if (isGameStarted) return "Sei sicuro di voler uscire?" }
 document.querySelector("#closepopup").onclick = HidePopup
 
 const usernameTriggers =
@@ -46,7 +46,7 @@ async function JoinGame()
     GetMessage(username)
 }
 
-async function StartGame()
+async function StartGame(gridObj)
 {
     /* gridObj = api call */
     isGameStarted = true
@@ -132,6 +132,10 @@ async function SendGridToServer()
         }
     }
 
+    console.log(username)
+    console.log(gridArray)
+    console.log(roundAnswers)
+    
     /* send(username, gridArray, roundAnswers) to replace with API call */
 
     roundAnswers = []
@@ -158,7 +162,7 @@ async function PrepareGrid(gridObj)
     {
         cells[i].addEventListener("click", () =>
         {
-            if (isMarkable && maxAnswers > 0 && !cells[i].classList.contains("locked") && !cells[i].classList.contains("marked") && cells[i].textContent != String.fromCharCode(160)) /* 160 = char code for &nbsp; */
+            if (isMarkable && maxAnswers > 0 && !cells[i].classList.contains("locked") && !cells[i].classList.contains("marked") && cells[i].textContent !="")
             {
                 cells[i].classList.add("marked")
                 maxAnswers--

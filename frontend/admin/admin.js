@@ -38,9 +38,9 @@ window.onload = () =>
 
 document.querySelector("#startgame").addEventListener("click", StartGame)
 document.querySelector("#stopgame").onclick = () => EndGame("NESSUNO")
-document.querySelector("#extractionbox").addEventListener("click", NewExtraction)
+document.querySelector("#extractionbox").onclick = () => NewExtraction(/* api call to get question*/)
 document.querySelector("#showsolutions").onclick = () => ShowSolutions()
-document.querySelector("#addtime").addEventListener("click", () => { timeLeft += 15 })
+//document.querySelector("#addtime").addEventListener("click", () => { timeLeft += 15 })
 //document.querySelector("#localip").innerHTML = /* api call */
 //document.querySelector("#gamelocalip").innerHTML = /* api call */
 
@@ -150,7 +150,6 @@ function OnPlayerLeave(username)
 async function StartGame()
 {
   /* todo: api call to get question */
-  /* todo: api call solutions.push({text: "", result: []}) */
   isGameStarted = true
   StartTimer()
   document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
@@ -214,9 +213,19 @@ async function SortLeaderboard()
 }
 
 
-function NewExtraction()
+let questionObj =
 {
-  /* todo: api call to get question */
+  text: "<div cock>",
+  complexity: 6,
+  result: [1,2],
+}
+
+function NewExtraction(questionObj)
+{
+  solutions.push({text: questionObj.text, result: questionObj.result})
+  
+  let complexityIncrement = 30
+  document.querySelector("#question").innerHTML = questionObj.text
   song.currentTime = 0
   song.play()
   document.querySelector("#questioncontainer").style.display = "block"
@@ -228,7 +237,7 @@ function NewExtraction()
   }
 
   isIdle = false
-  initialTime = 30
+  initialTime = questionObj.complexity * complexityIncrement
   timeLeft = initialTime
 
   document.querySelector("#questioncontainer").classList.toggle("extractionanim")
@@ -250,6 +259,8 @@ async function ClearExtraction()
   await new Promise(r => setTimeout(r, 3000))
 
   document.querySelector("#hand").classList.toggle("handsanim")
+
+  // api call UpdateLeaderboard(leaderboardObj)
   SortLeaderboard()
 
   if (toExtract == extracted)
@@ -281,7 +292,7 @@ function StartTimer()
       ClearExtraction()
       isIdle = true
     }
-    timer.textContent = new Date(elapsedtime * 1000).toISOString().substr(11, 8);
+    timer.textContent = new Date(elapsedtime * 1000).toISOString().slice(11, 19)
 
   }, 1000)
 }
