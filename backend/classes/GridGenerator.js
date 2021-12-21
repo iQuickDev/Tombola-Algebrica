@@ -42,7 +42,7 @@ module.exports = class GridGenerator
 
           if (col == grid[grid.length - 1])
           {
-            const t = grid.flatMap(col => col[i] !== '' ? [o.name] : []).sort((a, b) => a - b)
+            const t = grid.flatMap(col => col[i] !== '' ? [col[i]] : []).sort((a, b) => a - b)
 
             for (const col of grid)
             {
