@@ -10,7 +10,7 @@ module.exports = class PlayerSet
 
   add(players)
   {
-    const names = Object.keys(players)
+    const names = Object.keys(this.#players)
 
     for (const playerName in players)
       if (names.includes(playerName))

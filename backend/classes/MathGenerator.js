@@ -70,7 +70,7 @@ module.exports = class MathGenerator
     `.replaceAll(/\n|\r|\t|\s\s/g, '')
   }
 
-  #renderLimitPrefix(approach = '', fractionWithin = false)
+  #renderLimitPrefix(approach, fractionWithin = false)
   {
     fractionWithin |= approach.includes('fraction')
 
@@ -80,6 +80,16 @@ module.exports = class MathGenerator
         <span>x &xrarr; ${approach}</span>
       </div>
     `.replaceAll(/\n|\r|\t|\s\s/g, '')
+  }
+
+  #renderPower(base, exponent)
+  {
+    if (exponent == 0)
+      return ''
+    if (exponent == 1)
+      return String(base)
+    else
+      return /*html*/ `${base}<sup>${exponent}</sup>`
   }
 
   #randomCobinatoricSetKey()
@@ -440,7 +450,121 @@ module.exports = class MathGenerator
 
   randomLimitII(set)
   {
+    // Draw.
 
+    let complexity = 2, limR = set[this.randomInt(0, set.length - 1, r => set[r] == '&empty;')]
+    set.splice(set.indexOf(limR), 1)
+
+    // Generation.
+
+    let denTerms = new Array(this.randomInt(2, 4)), numTerms = new Array(this.randomInt(2, 4))
+    const maxTerms = Math.max(denTerms.length, numTerms.length)
+    const approachSign = this.randomBool() ? 1 : -1
+    denTerms[0] = { coef: this.randomInt(-8, 8, r => r == 0) }
+
+    if (typeof limR == 'string')
+    {
+      numTerms[0] =
+      {
+        coef: denTerms[0].coef * this.randomInt(-8, 8, r => r == 0),
+        exponent: this.randomInt(maxTerms, 12)
+      }
+
+      denTerms[0].exponent = this.randomInt(maxTerms - 1, numTerms[0].exponent - 1)
+      const resultSign = parseInt(limR[0] + 1)
+      const internalApproachSign = approachSign ** (numTerms[0].exponent - denTerms[0].exponent)
+      let numSign = numTerms[0].coef / Math.abs(numTerms[0].coef) * internalApproachSign
+      let denSign = denTerms[0].coef / Math.abs(denTerms[0].coef)
+
+      if (numSign / denSign != resultSign)
+        numTerms[0].coef *= resultSign
+    }
+    else if (limR == 0)
+    {
+      denTerms[0].exponent = this.randomInt(maxTerms, 12)
+
+      numTerms[0] =
+      {
+        coef: denTerms[0].coef * this.randomInt(-8, 8, r => r == 0),
+        exponent: this.randomInt(maxTerms - 1, denTerms[0].exponent - 1)
+      }
+    }
+    else
+    {
+      numTerms[0] =
+      {
+        coef: denTerms[0].coef * limR,
+        exponent: denTerms[0].exponent = this.randomInt(maxTerms - 1, 12)
+      }
+    }
+
+    const filler = (terms, min, max) =>
+    {
+      const exponents = [ ]
+
+      for (let i = 0; i < terms[0].exponent - 1; ++i)
+        exponents[i] = i + 1
+
+      for (let i = 1; i < terms.length; ++i)
+      {
+        const exponent = exponents[this.randomInt(0, exponents.length - 1)]
+        exponents.splice(exponents.indexOf(exponent), 1)
+
+        terms[i] =
+        {
+          coef: this.randomInt(min, max, r => r == 0),
+          exponent: i == terms.length - 1 ? 0 : this.randomInt(1, exponent)
+        }
+      }
+    }
+
+    filler(denTerms, -80, 80)
+    filler(numTerms, -160, 160)
+    const prefix = this.#renderLimitPrefix((approachSign < 0 ? '-' : '+') + '&infin;', true)
+
+    const mixer = terms =>
+    {
+      if (terms.length > 2 && this.randomBool())
+      {
+        let index = this.randomInt(1, terms.length - 1), t = terms[0]
+        terms[0] = terms[index]
+        terms[index] = t
+        index = this.randomInt(1, terms.length - 1, r => r == index)
+        t = terms[0]
+        terms[0] = terms[index]
+        terms[index] = t
+        complexity += 0.5
+      }
+
+      return terms
+    }
+
+    const suffix = this.#fractionAsCoefficient(
+      this.#finalizeExpression(
+        mixer(
+          numTerms.map(term => this.#renderBlock(
+            term.coef < 0,
+            term.coef,
+            this.#renderPower('x', term.exponent)
+          ))
+        ).join('')
+      ),
+      this.#finalizeExpression(
+        mixer(
+          denTerms.map(term => this.#renderBlock(
+            term.coef < 0,
+            term.coef,
+            this.#renderPower('x', term.exponent)
+          ))
+        ).join('')
+      )
+    )
+
+    return {
+      result: [ limR ],
+      complexity: complexity,
+      text: prefix + suffix
+    }
   }
 
   randomCombinatoricExpression(set)
