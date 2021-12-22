@@ -3,6 +3,11 @@ module.exports = class PlayerSet
   #players = { }
   #added = null
 
+  get count()
+  {
+    return Object.keys(this.#players).length
+  }
+
   set added(v)
   {
     this.#added = v

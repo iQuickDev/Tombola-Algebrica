@@ -8,13 +8,14 @@ const path = require('path')
 const ip = require('ip')
 const express = require('express')
 
-let echoReceiving = null, game = null, entered = false
+let echoReceiving = null, userResPreprocessor = null, game = null, entered = false, stop = true
 const port = 8080
 const generator = new QuestionGenerator()
 const firstQuestion = generator.randomQuestion()
 const echo = new Wrapper(null)
 const players = new PlayerSet()
 const playersQueue = [ ]
+const usersResponses = [ ]
 const app = express()
 app.use(express.json())
 
@@ -70,7 +71,7 @@ app.all('/status/:code', (req, res) => res.status(parseInt(req.params.code)).end
 
 app.post('/api/entry', (req, res) =>
 {
-  res.json({ address: `${ip.address()}:${port}` })
+  res.json({ address: `${ip.address()}:${port}`, question: firstQuestion })
 
   if (isLoopback(req.ip))
     entered = true
@@ -86,7 +87,7 @@ app.post('/api/start', (req, res) =>
     {
       if (playersQueue.length == 0)
       {
-        game = new Game(players.toObject(), generator)
+        game = new Game(players.toObject(), firstQuestion)
         echoReceiving = null
         return () => res.status(200).end()
       }
@@ -98,12 +99,58 @@ app.post('/api/start', (req, res) =>
     res.status(403).end()
 })
 
+app.post('/api/round/start', (req, res) =>
+{
+  if (game == null || !stop)
+    res.status(409).end()
+  else if (isLoopback(req.ip))
+  {
+    for (const userRes of usersResponses)
+    {
+      userResPreprocessor?.(userRes)
+      userRes.json(userRes.bodyObj)
+    }
+
+    stop = false
+    res.status(200).end()
+  }
+  else
+    res.status(403).end()
+})
+
+app.post('/api/round/end', (req, res) =>
+{
+  if (game == null || stop)
+    res.status(409).end()
+  else if (isLoopback(req.ip))
+  {
+    game.question = generator.randomQuestion()
+    userResPreprocessor = userRes => userRes.bodyObj = game.question
+
+    setTimeout(() =>
+    {
+      stop = true
+      res.json({ message: game.calculate(), ...game.rankings })
+      game.clearChanges()
+    }, 3000)
+  }
+  else
+  {
+    game.insertChanges(req.body)
+    usersResponses.push(res)
+  }
+})
+
 app.post('/api/players', (req, res) =>
 {
   if (game != null || echoReceiving != null)
     res.status(409).end()
   else if (players.add(req.body))
-    res.status(201).json({ grid: GridGenerator.newGrid(), question: firstQuestion})
+  {
+    res.bodyObj = { grid: GridGenerator.newGrid(), question: firstQuestion}
+    userResPreprocessor = null
+    usersResponses.push(res)
+  }
   else
     res.status(401).end()
 })
