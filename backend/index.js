@@ -36,7 +36,7 @@ echo.changed = () =>
   }
 }
 
-players.added = (input) =>
+players.added = input =>
 {
   if (echo.value == null)
     playersQueue.push(input)
@@ -130,7 +130,7 @@ app.post('/api/round/end', (req, res) =>
     setTimeout(() =>
     {
       stop = true
-      res.json({ message: game.calculate(), ...game.rankings })
+      res.json({ question: game.question, ...game.calculate(), ...game.rankings })
       game.clearChanges()
     }, 3000)
   }

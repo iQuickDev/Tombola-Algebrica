@@ -21,7 +21,6 @@ const usernameTriggers =
     "⬇️SENATORE<br>⬆️SENATORE<br>➡️SENATORE<br>⬅️SENATORE<br>🎯SENATORE": ["sena", "gius", "guis"]
 }
 
-var originServer = `http://${location.hostname}:${location.port}`
 let maxAnswers = 2
 var isMarkable = true
 var username = ""
@@ -32,7 +31,7 @@ var timeLeft = 0
 
 document.querySelector("#ready").onclick = JoinGame
 
-async function JoinGame()
+function JoinGame()
 {
     let loader = document.querySelector("#loader").cloneNode(true)
 
@@ -46,6 +45,19 @@ async function JoinGame()
     document.querySelector("#ready").disabled = true
     document.querySelector("#loader").classList.remove("hidden")
     GetMessage(username)
+
+    const body = { }
+    body[username] = 0
+
+    fetch('/api/players',
+    {
+        method: 'POST',
+        body: body
+    }).then(res => res.json()).then(data =>
+    {
+        NewRound(data.question)
+        StartGame(data.grid)
+    })
 }
 
 function StartTime()
@@ -55,7 +67,6 @@ function StartTime()
 
 async function StartGame(gridObj)
 {
-    /* gridObj = api call */
     isGameStarted = true
 
     document.querySelector("#pregame").style.animation = "dragup 1s ease-in-out forwards"
@@ -71,9 +82,9 @@ async function StartGame(gridObj)
 function NewRound(questionObj)
 {
     timeLeft = questionObj.complexity * increment
-    let fetchedMaxAnswers = 2 /* to replace with API call */
     isMarkable = true
-    maxAnswers = fetchedMaxAnswers
+    maxAnswers = questionObj.result.length
+    StartTime()
 }
 
 function EndRound()
@@ -95,7 +106,7 @@ function EndRound()
 
 var oldMarked = []
 
-async function SendGridToServer()
+function SendGridToServer()
 {
     let cells = document.querySelectorAll("#gameboard td")
     let answers = {}
@@ -115,7 +126,14 @@ async function SendGridToServer()
         }
     }
 
-    /* send(username, gridArray, roundAnswers) to replace with API call */
+    const body = { }
+    body[username] = answers
+
+    fetch('/api/round/start',
+    {
+        method: 'POST',
+        body: body
+    }).then(res => res.json()).then(data => NewRound(data))
 }
 
 
@@ -169,7 +187,7 @@ function GetMessage(username)
         {
             if (username.includes(keyword))
             ShowPopup(message)
-        }   
+        }
     }
     return null
 }

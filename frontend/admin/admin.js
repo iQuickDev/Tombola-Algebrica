@@ -12,25 +12,8 @@ var song = new Audio("../common/audio/song.mp3")
 var notificationSound = new Audio("../common/audio/notification.mp3")
 var solutions = []
 var localAddress
-postData("http://127.0.0.1:8080/api/entry", {}).then(data => localAddress = data.address)
-
-async function postData(url = '', data = {}) {
-  // Default options are marked with *
-  const response = await fetch(url, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json'
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    body: JSON.stringify(data) // body data type must match "Content-Type" header
-  });
-  return response.json(); // parses JSON response into native JavaScript objects
-}
+var question
+var complexityIncrement = 30
 
 /*game.setTime = (time) => {timeLeft = time}
 game.addTime = (time) => {timeLeft += time}
@@ -62,7 +45,7 @@ window.onload = () =>
 document.querySelector("#startgame").onclick = () => StartGame()
 document.querySelector("#stopgame").onclick = () => EndGame("NESSUNO")
 
-document.querySelector("#extractionbox").onclick = () => NewExtraction(/* api call to get question*/)
+document.querySelector("#extractionbox").onclick = () => NewExtraction(question)
 document.querySelector("#localip").innerHTML = localAddress
 document.querySelector("#gamelocalip").innerHTML = localAddress
 
@@ -100,11 +83,11 @@ async function SimulatePlayerJoin(amount)
       document.querySelector("#participantscountwrapper").classList.add("participantsincrement")
 
       document.querySelector("#participantscount").textContent = participantscount
-  
+
       await new Promise(r => setTimeout(r, 250))
-  
+
       document.querySelector("#participantscountwrapper").classList.remove("participantsincrement")
-      
+
       await new Promise(r => setTimeout(r, 250))
       testPlayer.remove()
       OnPlayerLeave(testPlayer.innerHTML)
@@ -132,7 +115,7 @@ function OnPlayerJoin(username)
     let newPosition = document.createElement("li")
     newPosition.classList.add("leaderboardposition")
     let newPlayer = document.createElement("li")
-  
+
     switch (positions.children.length)
     {
       case 0:
@@ -152,7 +135,7 @@ function OnPlayerJoin(username)
     }
     positions.appendChild(newPosition)
     newPlayer.innerHTML = "<span class='username'>" + username + "</span>" + " <span class='score'>" + 0 + "</span>"
-  
+
     leaderboard.appendChild(newPlayer)
   }
 }
@@ -174,43 +157,28 @@ function OnPlayerLeave(username)
 
 async function StartGame()
 {
-  /* todo: api call to get question */
-  isGameStarted = true
-  StartTimer()
-  document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
-  document.querySelector("#game").style.display = "block"
-  document.querySelector("#game").style.animation = "showgamepanel 1s linear"
-  await new Promise(r => setTimeout(r, 1000))
-  document.querySelector("#pregame").style.display = "none"
-
-  document.querySelector("#formula1").remove()
-  document.querySelector("#formula2").remove()
-  document.querySelector("#formula3").remove()
-  document.querySelector("#formula4").remove()
-  document.querySelector("#formula5").remove()
-  document.querySelector("#formula6").remove()
-  document.querySelector("#formula7").remove()
-  document.querySelector("#formula8").remove()
-}
-
-function UpdateLeaderboard(leaderboardObj)
-{
-  let players = document.querySelector("#leaderboardplayers").children
-  let index = 0
-
-  for (const user in leaderboardObj)
+  fetch('/api/start', { method: 'POST' }).then(() =>
   {
-    players[index].innerHTML = /*html*/
-    `
-    <span class="username">${user}</span>
-    <span class="score">${leaderboardObj[user]}</span>
-    `
-    index++
-  }
+    isGameStarted = true
+    StartTimer()
+    document.querySelector("#pregame").style.animation = "dragabove 1s linear forwards"
+    document.querySelector("#game").style.display = "block"
+    document.querySelector("#game").style.animation = "showgamepanel 1s linear"
+    await new Promise(r => setTimeout(r, 1000))
+    document.querySelector("#pregame").style.display = "none"
 
+    document.querySelector("#formula1").remove()
+    document.querySelector("#formula2").remove()
+    document.querySelector("#formula3").remove()
+    document.querySelector("#formula4").remove()
+    document.querySelector("#formula5").remove()
+    document.querySelector("#formula6").remove()
+    document.querySelector("#formula7").remove()
+    document.querySelector("#formula8").remove()
+  })
 }
 
-async function UpdateLeaderboard(leaderboardObj)
+async function UpdateLeaderboard()
 {
   let leaderboard = document.querySelector("#leaderboardplayers")
   let players = document.querySelector("#leaderboardplayers").children
@@ -220,12 +188,21 @@ async function UpdateLeaderboard(leaderboardObj)
 
   await new Promise(r => setTimeout(r, 1000))
 
-  for (const user in leaderboardObj)
+  const data = await (
+    await fetch(
+      '/api/round/end',
+      { method: 'POST' }
+    )
+  ).json()
+
+  question = data.question
+
+  for (const user in data.fake)
   {
     players[index].innerHTML = /*html*/
     `
     <span class="username">${user}</span>
-    <span class="score">${leaderboardObj[user]}</span>
+    <span class="score">${data.fake[user]}</span>
     `
     index++
   }
@@ -243,6 +220,7 @@ async function UpdateLeaderboard(leaderboardObj)
 
   scoresAndPlayers = []
 
+  ShowNotification(data.message, data.name)
   document.querySelector("#leaderboard").classList.toggle("leaderboardupdate")
   document.querySelector("#leaderboard").style.overflow = "hidden"
 
@@ -260,37 +238,39 @@ let questionObj =
 
 function NewExtraction(questionObj)
 {
-  document.querySelector("#stopgame").disabled = true
-  solutions.push({text: questionObj.text, result: questionObj.result})
-  
-  let complexityIncrement = 30
-  document.querySelector("#question").innerHTML = questionObj.text
-  song.currentTime = 0
-  song.play()
-  document.querySelector("#questioncontainer").style.display = "block"
-  document.querySelector("#extractionbox").style.pointerEvents = "none"
-  if (document.querySelector("#questioncontainer").classList.contains("removeextractednumberanim"))
+  fetch('/api/round/start', { method: 'POST' }).then(() =>
   {
-    document.querySelector("#questioncontainer").classList.remove("removeextractednumberanim")
-    document.querySelector("#questioncontainer").classList.remove("extractionanim")
-  }
+    document.querySelector("#stopgame").disabled = true
+    solutions.push({text: questionObj.text, result: questionObj.result})
 
-  isIdle = false
-  initialTime = questionObj.complexity * complexityIncrement
-  timeLeft = initialTime
+    document.querySelector("#question").innerHTML = questionObj.text
+    song.currentTime = 0
+    song.play()
+    document.querySelector("#questioncontainer").style.display = "block"
+    document.querySelector("#extractionbox").style.pointerEvents = "none"
+    if (document.querySelector("#questioncontainer").classList.contains("removeextractednumberanim"))
+    {
+      document.querySelector("#questioncontainer").classList.remove("removeextractednumberanim")
+      document.querySelector("#questioncontainer").classList.remove("extractionanim")
+    }
 
-  document.querySelector("#questioncontainer").classList.toggle("extractionanim")
-  extracted++
-  document.querySelector("#extractedcount").textContent = extracted
-  document.querySelector("#toextractcount").textContent = toExtract - extracted
+    isIdle = false
+    initialTime = questionObj.complexity * complexityIncrement
+    timeLeft = initialTime
+
+    document.querySelector("#questioncontainer").classList.toggle("extractionanim")
+    extracted++
+    document.querySelector("#extractedcount").textContent = extracted
+    document.querySelector("#toextractcount").textContent = toExtract - extracted
+  })
 }
 
 async function ClearExtraction()
 {
   song.pause()
 
-  UpdateLeaderboard(leaderboardObj)  
- 
+  UpdateLeaderboard()
+
   document.querySelector("#hand").classList.toggle("handsanim")
 
   await new Promise(r => setTimeout(r, 900))
@@ -304,11 +284,6 @@ async function ClearExtraction()
   document.querySelector("#extractionbox").style.pointerEvents = "all"
 
   document.querySelector("#stopgame").disabled = false
-
-  if (toExtract == extracted)
-  {
-    EndGame()
-  }
 }
 
 function GetTimePercentage()
@@ -356,12 +331,12 @@ async function ConfettiRain(delay)
   confettiDiv.remove()
 }
 
-async function ShowNotification(message)
+async function ShowNotification(message, name)
 {
   if (message != null)
   {
     if (message.toLowerCase().includes("tombola"))
-      EndGame()
+      EndGame(name)
 
     notificationSound.play()
     document.querySelector("#notification").style.display = "block"
@@ -480,7 +455,7 @@ async function EndGame(winnerName)
 
   for (let i = 0; i < document.querySelector("#screen").children.length; i++)
   document.querySelector("#screen").children[i].style.animation = "shrinkdisappear 1s linear forwards"
-  
+
   document.querySelector("#leaderboard").classList.add("slideleft")
   document.querySelector("#info").classList.add("slideright")
 
@@ -534,72 +509,72 @@ function LoadConfetti()
     },
     particles: {
       number: {
-        value: 0 
+        value: 0
       },
       color: {
-        value: ["#1E00FF", "#FF0061", "#E1FF00", "#00FF9E"] 
+        value: ["#1E00FF", "#FF0061", "#E1FF00", "#00FF9E"]
       },
       shape: {
-        type: "confetti", 
+        type: "confetti",
         options: {
           confetti: {
-            type: ["circle", "square"] 
+            type: ["circle", "square"]
           }
         }
       },
       opacity: {
-        value: 1, 
+        value: 1,
         animation: {
-          enable: true, 
-          minimumValue: 0, 
-          speed: 2, 
-          startValue: "max", 
-          destroy: "min" 
+          enable: true,
+          minimumValue: 0,
+          speed: 2,
+          startValue: "max",
+          destroy: "min"
         }
       },
       size: {
         value: 7,
         random: {
-          enable: false, 
-          minimumValue: 3 
+          enable: false,
+          minimumValue: 3
         }
       },
       life: {
         duration: {
-          sync: true, 
-          value: 5 
+          sync: true,
+          value: 5
         },
-        count: 1 
+        count: 1
       },
       move: {
-        enable: true, 
+        enable: true,
         gravity: {
-          enable: true, 
-          acceleration: 20 
+          enable: true,
+          acceleration: 20
         },
-        speed: 50, 
-        decay: 0.05, 
+        speed: 50,
+        decay: 0.05,
         outModes: {
-          default: "destroy", 
+          default: "destroy",
           top: "none"
         }
       }
     },
     background: {
-      color: "transparent" 
+      color: "transparent"
     },
-    emitters: [ 
+    emitters: [
       {
         direction: "top-right",
         rate: {
-          delay: 0.1, 
-          quantity: 15 
+          delay: 0.1,
+          quantity: 15
         },
         position: {
           x: 0,
           y: 50
         },
-        size: { 
+        size: {
           width: 0,
           height: 0
         }
@@ -622,3 +597,14 @@ function LoadConfetti()
     ]
   })
 }
+
+fetch('/api/entry', { method: 'POST' }).then(res => res.json()).then(data =>
+{
+  localAddress = data.address
+  firstQuestion = data.question
+
+  fetch('/api/players/echo').then(res => res.json()).then(data =>
+  {
+    OnPlayerJoin(Object.keys(data)[0])
+  })
+})

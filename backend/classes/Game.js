@@ -53,7 +53,7 @@ module.exports = class Game
 
   calculate()
   {
-    let fakeScore = 0, realScore = 0, message = null, user
+    let fakeScore = 0, realScore = 0, message = null, user = null
 
     for (const name in this.#changes)
     {
@@ -129,6 +129,6 @@ module.exports = class Game
     if (message != null)
       message = `${user} ha fatto ${message}!`
 
-    return message
+    return { message: message, name: user}
   }
 }
