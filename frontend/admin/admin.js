@@ -9,9 +9,32 @@ var participantscount = 0
 var scoresAndPlayers = []
 var isGameStarted = false
 var song = new Audio("../common/audio/song.mp3")
+var notificationSound = new Audio("../common/audio/notification.mp3")
 var solutions = []
+var localAddress
+postData("http://127.0.0.1:8080/api/entry", {}).then(data => localAddress = data.address)
 
-game.setTime = (time) => {timeLeft = time}
+async function postData(url = '', data = {}) {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data) // body data type must match "Content-Type" header
+  });
+  return response.json(); // parses JSON response into native JavaScript objects
+}
+
+/*game.setTime = (time) => {timeLeft = time}
+game.addTime = (time) => {timeLeft += time}
+game.removeTime = (time) => {timeLeft -= time}*/
 
 var timerPieElement = new EasyPieChart(document.querySelector(".timechart"),
 {
@@ -36,13 +59,15 @@ window.onload = () =>
   animateElement("#formula8")
 }
 
-document.querySelector("#startgame").addEventListener("click", StartGame)
+document.querySelector("#startgame").onclick = () => StartGame()
 document.querySelector("#stopgame").onclick = () => EndGame("NESSUNO")
+
 document.querySelector("#extractionbox").onclick = () => NewExtraction(/* api call to get question*/)
+document.querySelector("#localip").innerHTML = localAddress
+document.querySelector("#gamelocalip").innerHTML = localAddress
+
 document.querySelector("#showsolutions").onclick = () => ShowSolutions()
 //document.querySelector("#addtime").addEventListener("click", () => { timeLeft += 15 })
-//document.querySelector("#localip").innerHTML = /* api call */
-//document.querySelector("#gamelocalip").innerHTML = /* api call */
 
 function makeNewPosition()
 {
@@ -185,14 +210,25 @@ function UpdateLeaderboard(leaderboardObj)
 
 }
 
-async function SortLeaderboard()
+async function UpdateLeaderboard(leaderboardObj)
 {
   let leaderboard = document.querySelector("#leaderboardplayers")
   let players = document.querySelector("#leaderboardplayers").children
+  let index = 0
 
   document.querySelector("#leaderboard").classList.toggle("leaderboardupdate")
 
   await new Promise(r => setTimeout(r, 1000))
+
+  for (const user in leaderboardObj)
+  {
+    players[index].innerHTML = /*html*/
+    `
+    <span class="username">${user}</span>
+    <span class="score">${leaderboardObj[user]}</span>
+    `
+    index++
+  }
 
   for (let i = 0; i < players.length; i++)
   {
@@ -207,21 +243,24 @@ async function SortLeaderboard()
 
   scoresAndPlayers = []
 
+  document.querySelector("#leaderboard").classList.toggle("leaderboardupdate")
+  document.querySelector("#leaderboard").style.overflow = "hidden"
+
   await new Promise(r => setTimeout(r, 1000))
 
-  document.querySelector("#leaderboard").classList.toggle("leaderboardupdate")
+  document.querySelector("#leaderboard").style.overflow = "auto"
 }
-
 
 let questionObj =
 {
   text: "<div cock>",
-  complexity: 6,
+  complexity: 0.2,
   result: [1,2],
 }
 
 function NewExtraction(questionObj)
 {
+  document.querySelector("#stopgame").disabled = true
   solutions.push({text: questionObj.text, result: questionObj.result})
   
   let complexityIncrement = 30
@@ -249,7 +288,9 @@ function NewExtraction(questionObj)
 async function ClearExtraction()
 {
   song.pause()
-  document.querySelector("#extractionbox").style.pointerEvents = "all"
+
+  UpdateLeaderboard(leaderboardObj)  
+ 
   document.querySelector("#hand").classList.toggle("handsanim")
 
   await new Promise(r => setTimeout(r, 900))
@@ -260,8 +301,9 @@ async function ClearExtraction()
 
   document.querySelector("#hand").classList.toggle("handsanim")
 
-  // api call UpdateLeaderboard(leaderboardObj)
-  SortLeaderboard()
+  document.querySelector("#extractionbox").style.pointerEvents = "all"
+
+  document.querySelector("#stopgame").disabled = false
 
   if (toExtract == extracted)
   {
@@ -318,6 +360,10 @@ async function ShowNotification(message)
 {
   if (message != null)
   {
+    if (message.toLowerCase().includes("tombola"))
+      EndGame()
+
+    notificationSound.play()
     document.querySelector("#notification").style.display = "block"
     document.querySelector("#notificationcontent").innerHTML = message
     document.querySelector("#notification").style.animation = "shownotification 1s linear forwards"

@@ -27,6 +27,8 @@ var isMarkable = true
 var username = ""
 var isGameStarted = true
 var gridObj = []
+var increment = 30000
+var timeLeft = 0
 
 document.querySelector("#ready").onclick = JoinGame
 
@@ -46,6 +48,11 @@ async function JoinGame()
     GetMessage(username)
 }
 
+function StartTime()
+{
+    setTimeout(EndRound, timeLeft)
+}
+
 async function StartGame(gridObj)
 {
     /* gridObj = api call */
@@ -61,8 +68,9 @@ async function StartGame(gridObj)
     PrepareGrid(gridObj)
 }
 
-function NewRound()
+function NewRound(questionObj)
 {
+    timeLeft = questionObj.complexity * increment
     let fetchedMaxAnswers = 2 /* to replace with API call */
     isMarkable = true
     maxAnswers = fetchedMaxAnswers
@@ -85,60 +93,29 @@ function EndRound()
     SendGridToServer()
 }
 
+var oldMarked = []
+
 async function SendGridToServer()
 {
     let cells = document.querySelectorAll("#gameboard td")
-    let gridArray = []
-    let roundAnswers = []
-    let firstColumnArray = []
-    let secondColumnArray = []
-    let thirdColumnArray = []
+    let answers = {}
 
     for (let i = 0; i < cells.length; i++)
     {
-        if (parseInt(cells[i].id.replace("cell-", "")) < 9)
+        if (cells[i].classList.contains("marked") && !oldMarked.includes(cells[i].textContent))
         {
-            firstColumnArray.push({
-                value: cells[i].innerText,
-                marked: cells[i].classList.contains("marked")
-            })
-        }
-        else if (parseInt(cells[i].id.replace("cell-", "")) < 18)
-        {
-            secondColumnArray.push({
-                value: cells[i].innerText,
-                marked: cells[i].classList.contains("marked")
-            })
-        }
-        else
-        {
-            thirdColumnArray.push({
-                value: cells[i].innerText,
-                marked: cells[i].classList.contains("marked")
-            })
+            oldMarked.push(cells[i].textContent)
+
+            if (parseInt(cells[i].id.replace("cell-", "")) < 9)
+                answers[cells[i].textContent] = 0
+            else if (parseInt(cells[i].id.replace("cell-", "")) < 18)
+                answers[cells[i].textContent] = 1
+            else
+                answers[cells[i].textContent] = 2
         }
     }
 
-    gridArray.push(firstColumnArray, secondColumnArray, thirdColumnArray)
-    
-    for (let i = 0; i < gridArray.length; i++)
-    {
-        for (let j = 0; j < gridArray[i].length; j++)
-        {
-            if (gridArray[i][j].marked)
-            {
-                roundAnswers.push(gridArray[i][j].value)
-            }
-        }
-    }
-
-    console.log(username)
-    console.log(gridArray)
-    console.log(roundAnswers)
-    
     /* send(username, gridArray, roundAnswers) to replace with API call */
-
-    roundAnswers = []
 }
 
 

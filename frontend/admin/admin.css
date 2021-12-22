@@ -284,6 +284,7 @@ th
 {
     max-height: 85px !important;
     transition: max-height 1s linear;
+    overflow: hidden !important;
 }
 
 .leaderboardheaders h2
