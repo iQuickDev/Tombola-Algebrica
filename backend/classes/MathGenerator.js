@@ -322,8 +322,6 @@ module.exports = class MathGenerator
       rightOfEq = '0'
     }
 
-    console.log(`[${a}/${aDen}](x - ${x1}/${xDen1})(x - ${x2}/${xDen2})`)
-
     if (isImpossible)
       result = [ '&empty;' ]
     else if (x1 == x2)
@@ -345,7 +343,7 @@ module.exports = class MathGenerator
   randomLimitZZ(set)
   {
     const alpha = { num: this.randomInt(-8, 8, r => r == 0), den: 1 }
-    let complexity = 2, isOne = false, isZero = false, infinitySign = null
+    let complexity = 0, isOne = false, isZero = false, infinitySign = null
     let limR = set[this.randomInt(0, set.length - 1, r => set[r] == '&empty;')]
     set.splice(set.indexOf(limR), 1)
 

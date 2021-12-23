@@ -29,10 +29,10 @@ module.exports = class Game
     this.#question = v
   }
 
-  constructor(players, oldQuestion = null)
+  constructor(players, question = null)
   {
     this.rankings = { fake: players, real: { ...players } }
-    this.#oldQuestion = oldQuestion
+    this.#oldQuestion = this.#question = question
 
     for (const name in players)
     {
@@ -53,10 +53,12 @@ module.exports = class Game
 
   calculate()
   {
-    let fakeScore = 0, realScore = 0, message = null, user = null
+    let message = null, user = null
 
     for (const name in this.#changes)
     {
+      let fakeScore = 0, realScore = 0
+
       for (const answer in this.#changes[name])
       {
         let n = 0
@@ -102,7 +104,7 @@ module.exports = class Game
 
         fakeScore += n + 1
 
-        if (this.#oldQuestion.result.includes(answer))
+        if (this.#oldQuestion.result.includes(isNaN(parseInt(answer)) ? answer : parseInt(answer)))
         {
           ++realScore
 

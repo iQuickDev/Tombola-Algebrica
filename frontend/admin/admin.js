@@ -11,9 +11,9 @@ var isGameStarted = false
 var song = new Audio("../common/audio/song.mp3")
 var notificationSound = new Audio("../common/audio/notification.mp3")
 var solutions = []
-var localAddress
 var question
-var complexityIncrement = 30
+var complexityIncrement = 40
+var lastGrid
 
 /*game.setTime = (time) => {timeLeft = time}
 game.addTime = (time) => {timeLeft += time}
@@ -42,12 +42,10 @@ window.onload = () =>
   animateElement("#formula8")
 }
 
-document.querySelector("#startgame").onclick = () => StartGame()
-document.querySelector("#stopgame").onclick = () => EndGame("NESSUNO")
+document.querySelector("#startgame").onclick = async () => StartGame()
+document.querySelector("#stopgame").onclick = async () => EndGame("NESSUNO")
 
 document.querySelector("#extractionbox").onclick = () => NewExtraction(question)
-document.querySelector("#localip").innerHTML = localAddress
-document.querySelector("#gamelocalip").innerHTML = localAddress
 
 document.querySelector("#showsolutions").onclick = () => ShowSolutions()
 //document.querySelector("#addtime").addEventListener("click", () => { timeLeft += 15 })
@@ -67,13 +65,13 @@ function animateElement(element)
   })
 }
 
-async function SimulatePlayerJoin(amount)
+async function OnPlayerJoin(username)
 {
-  for (let i = 0; i < amount; i++)
+  if (!isGameStarted)
   {
     let testPlayer = document.createElement("h4")
     testPlayer.classList.add("player")
-    testPlayer.innerHTML = "testPlayer" + i
+    testPlayer.innerHTML = username
 
     testPlayer.addEventListener("click", async () =>
     {
@@ -95,20 +93,12 @@ async function SimulatePlayerJoin(amount)
 
     participantscount++
     document.querySelector("#playerscontainer").appendChild(testPlayer)
-    OnPlayerJoin(testPlayer.innerHTML)
-    document.querySelector("#participantscountwrapper").classList.add("participantsincrement")
-    document.querySelector("#participantscount").textContent = participantscount
-    await new Promise(r => setTimeout(r, 250))
-    document.querySelector("#participantscountwrapper").classList.remove("participantsincrement")
-    await new Promise(r => setTimeout(r, 250))
-  }
-}
 
-function OnPlayerJoin(username)
-{
-  if (!isGameStarted)
-  {
-    CheckNewPlayer(username)
+    let audio = new Audio("../common/audio/joinSound.wav")
+    const nencioni = username.toLowerCase()
+
+    if (nencioni.includes("nencio") || nencioni.includes("dani"))
+      audio.play()
 
     let leaderboard = document.querySelector("#leaderboardplayers")
     let positions = document.querySelector("#leaderboardpositions")
@@ -137,11 +127,28 @@ function OnPlayerJoin(username)
     newPlayer.innerHTML = "<span class='username'>" + username + "</span>" + " <span class='score'>" + 0 + "</span>"
 
     leaderboard.appendChild(newPlayer)
+
+    document.querySelector("#participantscountwrapper").classList.add("participantsincrement")
+    document.querySelector("#participantscount").textContent = participantscount
+    await new Promise(r => setTimeout(r, 250))
+    document.querySelector("#participantscountwrapper").classList.remove("participantsincrement")
+    await new Promise(r => setTimeout(r, 250))
   }
 }
 
 function OnPlayerLeave(username)
 {
+  fetch('/api/players/remove',
+  {
+    method: 'POST',
+    body: JSON.stringify({ name: username }),
+
+    headers:
+    {
+        'Content-Type': 'application/json'
+    }
+  })
+
   let leaderboard = document.querySelector("#leaderboardplayers")
   let positions = document.querySelector("#leaderboardpositions")
 
@@ -157,7 +164,7 @@ function OnPlayerLeave(username)
 
 async function StartGame()
 {
-  fetch('/api/start', { method: 'POST' }).then(() =>
+  fetch('/api/start', { method: 'POST' }).then(async () =>
   {
     isGameStarted = true
     StartTimer()
@@ -196,6 +203,7 @@ async function UpdateLeaderboard()
   ).json()
 
   question = data.question
+  lastGrid = data
 
   for (const user in data.fake)
   {
@@ -259,7 +267,7 @@ function NewExtraction(questionObj)
     timeLeft = initialTime
 
     document.querySelector("#questioncontainer").classList.toggle("extractionanim")
-    extracted++
+    extracted += questionObj.result.length
     document.querySelector("#extractedcount").textContent = extracted
     document.querySelector("#toextractcount").textContent = toExtract - extracted
   })
@@ -442,7 +450,7 @@ async function EndGame(winnerName)
 {
   song.pause()
 
-  //FillEndGameTable(scores) api call
+  FillEndGameTable(lastGrid)
   FillSolutionsScreen(solutions)
 
   document.querySelector("#winner").innerHTML = winnerName
@@ -600,11 +608,21 @@ function LoadConfetti()
 
 fetch('/api/entry', { method: 'POST' }).then(res => res.json()).then(data =>
 {
-  localAddress = data.address
-  firstQuestion = data.question
+  document.querySelector("#localip").innerHTML = data.address
+  document.querySelector("#gamelocalip").innerHTML = data.address
+  question = data.question
 
-  fetch('/api/players/echo').then(res => res.json()).then(data =>
+  const fetchEcho = () =>
   {
-    OnPlayerJoin(Object.keys(data)[0])
-  })
+    fetch('/api/players/echo').then(res => res.json()).then(data =>
+    {
+      OnPlayerJoin(Object.keys(data)[0])
+    }).then(() =>
+    {
+      if (!isGameStarted)
+        fetchEcho()
+    })
+  }
+
+  fetchEcho()
 })

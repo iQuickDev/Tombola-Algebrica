@@ -26,7 +26,7 @@ var isMarkable = true
 var username = ""
 var isGameStarted = true
 var gridObj = []
-var increment = 30000
+var increment = 40000
 var timeLeft = 0
 
 document.querySelector("#ready").onclick = JoinGame
@@ -52,12 +52,17 @@ function JoinGame()
     fetch('/api/players',
     {
         method: 'POST',
-        body: body
+        body: JSON.stringify(body),
+
+        headers:
+        {
+            'Content-Type': 'application/json'
+        }
     }).then(res => res.json()).then(data =>
     {
         NewRound(data.question)
         StartGame(data.grid)
-    })
+    }).catch(() => alert('USERNAME NON VALIDO'))
 }
 
 function StartTime()
@@ -129,10 +134,15 @@ function SendGridToServer()
     const body = { }
     body[username] = answers
 
-    fetch('/api/round/start',
+    fetch('/api/round/end',
     {
         method: 'POST',
-        body: body
+        body: JSON.stringify(body),
+
+        headers:
+        {
+            'Content-Type': 'application/json'
+        }
     }).then(res => res.json()).then(data => NewRound(data))
 }
 

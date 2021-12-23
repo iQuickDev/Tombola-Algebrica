@@ -15,7 +15,7 @@ const firstQuestion = generator.randomQuestion()
 const echo = new Wrapper(null)
 const players = new PlayerSet()
 const playersQueue = [ ]
-const usersResponses = [ ]
+let usersResponses = [ ]
 const app = express()
 app.use(express.json())
 
@@ -89,7 +89,7 @@ app.post('/api/start', (req, res) =>
       {
         game = new Game(players.toObject(), firstQuestion)
         echoReceiving = null
-        return () => res.status(200).end()
+        return () => {res.status(200).end()}
       }
       else
         return null
@@ -109,6 +109,7 @@ app.post('/api/round/start', (req, res) =>
     {
       userResPreprocessor?.(userRes)
       userRes.json(userRes.bodyObj)
+      usersResponses = [ ]
     }
 
     stop = false
@@ -161,6 +162,19 @@ app.get('/api/players/echo', (req, res) =>
     res.status(409).end()
   else if (isLoopback(req.ip))
     echo.value = res
+  else
+    res.status(403).end()
+})
+
+app.post('/api/players/remove', (req, res) =>
+{
+  if (game != null)
+    res.status(409).end()
+  else if (isLoopback(req.ip))
+  {
+    players.remove(req.body.name)
+    res.status(200).end()
+  }
   else
     res.status(403).end()
 })
