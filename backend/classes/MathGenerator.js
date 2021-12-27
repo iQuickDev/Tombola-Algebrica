@@ -22,14 +22,15 @@ module.exports = class MathGenerator
       for (let n = k + 1; lastPartial < max || lastCombination < max; ++n)
       {
         const nFact = this.fact(n)
+        const deltaFact = this.fact(n - k)
 
         if (parallel || lastPartial < max)
-          lastPartial = this.#partials[k][n] = Math.round(nFact / kFact);
+          lastPartial = this.#partials[k][n] = Math.round(nFact / deltaFact);
 
         if (parallel || lastCombination < max)
           lastCombination =
             this.#combinations[k][n] =
-              Math.round(nFact / (this.fact(n - k) * kFact))
+              Math.round(nFact / (deltaFact * kFact))
       }
     }
 
